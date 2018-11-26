@@ -2,9 +2,14 @@ package fall2018.csc2017.slidingtiles.SlidingTiles;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
@@ -40,8 +45,22 @@ public class GestureDetectGridViewST extends GestureDetectGridView {
                     ((GameActivity)parentActivity).makeToastText("Invalid Tap");
                 }
                 if (mController.hasWon()) {
-                    double score = GameActivity.getScore();
-                    mRef.child(GameLaunchCentreActivity.Email).child("mmsliding").setValue(score);
+                    final double score = GameActivity.getScore();
+                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Integer value = dataSnapshot.child("mmsliding").getValue(Integer.class);
+
+                            if (value < score){
+                                mRef.child("mmsliding").setValue(score);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     ((GameActivity)parentActivity).makeToastText("You Win");
                 }
                 return true;

@@ -21,12 +21,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fall2018.csc2017.slidingtiles.LeaderBoardActivity;
+import fall2018.csc2017.slidingtiles.PersonLeaderBoard;
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * The game launch center activity.
+ */
 public class GameLaunchCentreActivity extends AppCompatActivity {
+
+    /**
+     * A database reference.
+     */
     private DatabaseReference mRef;
+
+    /**
+     * A string keeping the Email address of current user.
+     */
     public static String Email;
+
+    /**
+     * A floating button for the scoreBoard.
+     */
     FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +52,10 @@ public class GameLaunchCentreActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), LeaderBoardActivity.class);
+                Intent intent = new Intent(getApplicationContext(), PersonLeaderBoard.class);
                 startActivity(intent);
             }
         });
-
-
-
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         mRef = FirebaseDatabase.getInstance().getReference();
@@ -60,13 +74,9 @@ public class GameLaunchCentreActivity extends AppCompatActivity {
                 recycleView.setAdapter(adapter);
                 recycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
-
     }
 }

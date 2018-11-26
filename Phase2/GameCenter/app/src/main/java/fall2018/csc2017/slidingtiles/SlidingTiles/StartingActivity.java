@@ -93,6 +93,7 @@ abstract class StartingActivity extends AppCompatActivity {
         scoreboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LeaderBoardActivity.GameName = "mmsliding";
                 startActivity(new Intent(StartingActivity.this, LeaderBoardActivity.class));
             }
         });

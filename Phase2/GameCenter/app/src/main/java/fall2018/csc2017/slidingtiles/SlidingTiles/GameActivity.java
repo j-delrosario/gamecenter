@@ -40,11 +40,6 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivity extends AppCompatActivity implements Observer{
 
     /**
-     * The game name.
-     */
-    public static final String gameName = "SlidingTiles";
-
-    /**
      * The board manager.
      */
     private BoardManager boardManager;

@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="45dp"
+            android:layout_marginLeft="35dp"
             android:fontFamily="@font/audiowide"
             android:text="MATCH"
             android:textAlignment="center"
@@ -46,21 +46,21 @@
             <Button
                 android:id="@+id/new_game"
                 android:layout_width="140dp"
-                android:layout_height="match_parent"
+                android:layout_height="67dp"
                 android:layout_marginLeft="23dp"
                 android:layout_marginTop="1dp"
-                android:layout_marginBottom="1dp"
+                android:layout_marginBottom="0dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorPrimary"
                 android:text="@string/new_game"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDarkMT"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/scoreboard_2048"
                 android:layout_width="140dp"
-                android:layout_height="match_parent"
+                android:layout_height="67dp"
                 android:layout_marginLeft="23dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorPrimary"
@@ -68,7 +68,7 @@
                 android:paddingRight="30dp"
                 android:text="@string/scoreBoard"
                 android:textColor="@color/colorPrimaryDarkMT"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
         </LinearLayout>
 
         <LinearLayout

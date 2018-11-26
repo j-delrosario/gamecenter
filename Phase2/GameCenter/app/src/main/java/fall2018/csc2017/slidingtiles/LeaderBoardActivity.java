@@ -26,7 +26,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
     public DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
 
-    private String GameName;
+    public static String GameName;
 
     public ArrayList getName(Map<String, Object> users) {
         ArrayList<String> name_list = new ArrayList<>();
@@ -38,7 +38,6 @@ public class LeaderBoardActivity extends AppCompatActivity {
     }
 
     public ArrayList getScore(Map<String, Object> users){
-        CheckGameName();
         ArrayList<Long> score_list = new ArrayList<>();
         for (Map.Entry<String, Object> entry: users.entrySet()){
             Map singleUser = (Map) entry.getValue();
@@ -47,17 +46,6 @@ public class LeaderBoardActivity extends AppCompatActivity {
         return score_list;
     }
 
-    private String CheckGameName(){
-        //TODO: CHANGE ACCESS TO GAME NAME, prob just pass in parameter or context when call scoreboard
-        /*if (StartingActivity.gameName.equals("SlidingTiles")){
-            GameName = "mmsliding";
-        }else if (StartingActivity.gameName.equals("MatchingTiles")) {
-            GameName = "mmmatching";
-        }else if (StartingActivity.gameName.equals("2048(Change Later)")) {
-            GameName = "mm2048";
-        }*/
-        return GameName;
-    }
 
     public void bubblesrt(ArrayList<Long> list, ArrayList<String> list_name)
     {

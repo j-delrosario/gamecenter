@@ -1,5 +1,6 @@
 package fall2018.csc2017.slidingtiles.twozerofoureight;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import fall2018.csc2017.slidingtiles.LeaderBoardActivity;
 import fall2018.csc2017.slidingtiles.R;
+
 
 /**
  * The Game activity for 2048.
@@ -16,9 +18,13 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivity2048 extends AppCompatActivity {
 
     /**
-     * The game name.
+     * The main save file.
      */
-    public static final String gameName = "TwoZeroFourEight";
+    public static final String SAVE_FILENAME = "save_file_2048.ser";
+    /**
+     * A temporary save file.
+     */
+    public static final String TEMP_SAVE_FILENAME = "save_file_2048_tmp.ser";
 
     /**
      * A GameView2048 for the game view.
@@ -39,6 +45,11 @@ public class GameActivity2048 extends AppCompatActivity {
      * An int represents the size of the stack.
      */
     private static int stackSize = 3;
+
+    /**
+     * a bool checks if it is loadable
+     */
+    private static boolean loadable = false;
 
     /**
      * A stack for the game states.
@@ -62,6 +73,8 @@ public class GameActivity2048 extends AppCompatActivity {
         currentScore.setTextSize(10);
         addUndoButtonListener();
         addNewGameButtonListener();
+        addScoreBoardButtonListener();
+        addLoadButtonListener();
         handler.post(new Runnable(){
             @Override
             public void run(){
@@ -110,6 +123,43 @@ public class GameActivity2048 extends AppCompatActivity {
     }
 
     /**
+     * Activate the load button.
+     */
+    protected void addLoadButtonListener() {
+        Button loadButton = findViewById(R.id.load_game_2048);
+        loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(loadable) {
+                    gameView2048.loadFromFile(SAVE_FILENAME);
+                    clearStack();
+                    makeToastLoadedText();
+                }
+                else {
+                    makeToastCantLoadText();
+                }
+            }
+        });
+    }
+
+    public static void setLoadable(){
+        loadable = true;
+    }
+    /**
+     * Display that a game was loaded successfully.
+     */
+    private void makeToastLoadedText() {
+        Toast.makeText(this, "Loaded Game", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Display that a game coudln't get loaded.
+     */
+    private void makeToastCantLoadText() {
+        Toast.makeText(this, "No Load available", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      *  Activate the undo button.
      **/
     private void addUndoButtonListener() {
@@ -137,6 +187,20 @@ public class GameActivity2048 extends AppCompatActivity {
             public void onClick(View v) {
                 clearStack();
                 gameView2048.start();
+            }
+        });
+    }
+
+    /**
+     * A listener for the ScoreBoard button.
+     */
+    private void addScoreBoardButtonListener(){
+        Button ScoreBoardButton = findViewById(R.id.scoreboard_2048);
+        ScoreBoardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LeaderBoardActivity.GameName = "mm2048";
+                startActivity(new Intent(GameActivity2048.this, LeaderBoardActivity.class));
             }
         });
     }

@@ -19,9 +19,21 @@ import fall2018.csc2017.slidingtiles.twozerofoureight.GameActivity2048;
 
 public class CentreAdapter extends RecyclerView.Adapter<CentreAdapter.myViewHolder> {
 
+    /**
+     * the Context
+     */
     Context mContext;
+
+    /**
+     * A list tracking the user Data.
+     */
     List<game_centre_item> mData;
 
+    /**
+     * initializes a game centre adapter
+     * @param mContext
+     * @param mData
+     */
     public CentreAdapter(Context mContext, List<game_centre_item> mData) {
         this.mContext = mContext;
         this.mData = mData;
@@ -40,11 +52,8 @@ public class CentreAdapter extends RecyclerView.Adapter<CentreAdapter.myViewHold
 
     @Override
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
-
         holder.profile_background.setImageResource(mData.get(position).getBackground());
         holder.tv_title.setText(mData.get(position).getProfileName());
-        holder.tv_max_mark.setText("Your highest mark: " + mData.get(position).getProfileMaxMark());
-
     }
 
     @Override
@@ -52,6 +61,9 @@ public class CentreAdapter extends RecyclerView.Adapter<CentreAdapter.myViewHold
         return mData.size();
     }
 
+    /**
+     * A view holder.
+     */
     public class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView profile_background;
@@ -61,7 +73,6 @@ public class CentreAdapter extends RecyclerView.Adapter<CentreAdapter.myViewHold
             super(itemView);
             profile_background = itemView.findViewById(R.id.card_background);
             tv_title = itemView.findViewById(R.id.card_title);
-            tv_max_mark = itemView.findViewById(R.id.card_mark);
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
         }

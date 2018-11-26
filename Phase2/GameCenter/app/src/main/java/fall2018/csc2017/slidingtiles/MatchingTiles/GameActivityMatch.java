@@ -1,5 +1,6 @@
 package fall2018.csc2017.slidingtiles.MatchingTiles;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,9 +12,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import fall2018.csc2017.slidingtiles.LeaderBoardActivity;
 import fall2018.csc2017.slidingtiles.R;
 
 public class GameActivityMatch extends AppCompatActivity {
+
+    /**
+     * The main save file.
+     */
+    public static final String SAVE_FILENAME = "save_match.ser";
+    /**
+     * A temporary save file.
+     */
+    public static final String TEMP_SAVE_FILENAME = "save_match_tmp.ser";
+
 
     private static TextView currentScore;
 
@@ -33,7 +45,7 @@ public class GameActivityMatch extends AppCompatActivity {
             if (saving) {
                 autosaveTimer.postDelayed(this, autosaveInterval);
                 GameViewMatch v = findViewById(R.id.gameViewMatch);
-                v.save();
+                v.save(SAVE_FILENAME);
                 makeToastSavedText();
             }
         }
@@ -52,7 +64,7 @@ public class GameActivityMatch extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         GameViewMatch v = findViewById(R.id.gameViewMatch);
-        v.save();
+        v.save(SAVE_FILENAME);
         autosaveTimer.removeCallbacks(autoSave);
     }
 
@@ -81,7 +93,8 @@ public class GameActivityMatch extends AppCompatActivity {
         scoreBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: uncomment this: startActivity(new Intent(GameActivity2048.this, LeaderBoardActivity.class));
+                LeaderBoardActivity.GameName = "mmmatching";
+                startActivity(new Intent(GameActivityMatch.this, LeaderBoardActivity.class));
             }
         });
     }

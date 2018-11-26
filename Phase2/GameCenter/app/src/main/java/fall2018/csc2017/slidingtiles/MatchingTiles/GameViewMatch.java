@@ -5,8 +5,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,16 +17,31 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 import fall2018.csc2017.slidingtiles.R;
+
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class GameViewMatch extends GridLayout {
 
     private static int NUM_ROW = 4;
     private static int NUM_COL = 4;
-
+    private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(GameLaunchCentreActivity.Email);
     private BoardMatch board = new BoardMatch();
 
     public GameViewMatch(Context context, AttributeSet attr, int def) {
@@ -56,7 +73,7 @@ public class GameViewMatch extends GridLayout {
         });
         this.setBackgroundColor(0xff959595);
         this.setColumnCount(4);
-        if (load()) {
+        if (load(GameActivityMatch.SAVE_FILENAME)) {
             board.refresh();
         } else {
             start();
@@ -75,7 +92,21 @@ public class GameViewMatch extends GridLayout {
                 if (board.isComplete()) {
                     Activity gameActivity = (Activity) this.getContext();
                     ((GameActivityMatch)gameActivity).stopSaving();
-                    // TODO: update scoreboard
+                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Integer value = dataSnapshot.child("mmmatching").getValue(Integer.class);
+
+                            if (value < BoardMatch.getScore()){
+                                mRef.child("mmmatching").setValue(BoardMatch.getScore());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     endAnimation();
                     makeToastCompletedText();
                 }
@@ -93,17 +124,38 @@ public class GameViewMatch extends GridLayout {
         generateRamBackground();
     }
 
-    public void save() {
-        // TODO: SAVE CODE
-        // save Board to database
+    public void save(String fileName) {
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(
+                    getContext().openFileOutput(fileName, MODE_PRIVATE));
+            outputStream.writeObject(board);
+            outputStream.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
-    private boolean load() {
+    private boolean load(String fileName) {
         // TODO: LOAD CODE
         // check if there is a Board stored in the database
         // set field board to the db board
         // return true if this was successful
         // return false if there was no board to load
+        try {
+            InputStream inputStream = getContext().openFileInput(fileName);
+            if (inputStream != null) {
+                ObjectInputStream input = new ObjectInputStream(inputStream);
+                board = (BoardMatch) input.readObject();
+                inputStream.close();
+                return true;
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            Log.e("login activity", "File contained unexpected data type: " + e.toString());
+        }
         return false;
     }
 

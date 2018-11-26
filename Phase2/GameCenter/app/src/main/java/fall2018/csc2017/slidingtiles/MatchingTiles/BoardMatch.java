@@ -8,7 +8,12 @@ import java.util.Observable;
 
 public class BoardMatch extends Observable implements Serializable {
 
+    /**
+     * A int of row number.
+     */
     private static int NUM_ROW = 4;
+
+
     private static int NUM_COL = 4;
     private static int score = 100;
     private TileMatch[][] tiles = new TileMatch[NUM_COL][NUM_ROW];

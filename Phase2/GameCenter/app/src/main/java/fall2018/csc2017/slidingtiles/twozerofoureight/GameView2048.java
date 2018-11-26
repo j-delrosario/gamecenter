@@ -4,14 +4,30 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A gridlayout for the 2048 Game.
@@ -58,6 +74,11 @@ public class GameView2048 extends GridLayout{
      * A list of integers represents the inital game state.
      */
     public int[] theInitial = new int[NUM_COL * NUM_ROW];
+
+    /**
+     * An database store the scores.
+     */
+    private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(GameLaunchCentreActivity.Email);
 
     /**
      * Returns the current score of the game.
@@ -108,6 +129,49 @@ public class GameView2048 extends GridLayout{
     }
 
     /**
+     * Load the board manager from fileName.
+     *
+     * @param fileName the name of the file
+     */
+    protected void loadFromFile(String fileName) {
+        try {
+            InputStream inputStream = getContext().openFileInput(fileName);
+            if (inputStream != null) {
+                ObjectInputStream input = new ObjectInputStream(inputStream);
+                int[] intBoard = (int[]) input.readObject();
+                updateTiles(intBoard);
+                updateBufferTiles(intBoard);
+                clearTheInitial();
+                setTheInitial(tilesToString(tiles));
+                inputStream.close();
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            Log.e("login activity", "File contained unexpected data type: " + e.toString());
+        }
+    }
+
+    /**
+     * Save the board manager to fileName.
+     *
+     * @param fileName the name of the file
+     */
+    public void saveToFile(String fileName) {
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(
+                    getContext().openFileOutput(fileName, MODE_PRIVATE));
+            outputStream.writeObject(tilesToString(tiles));
+            outputStream.close();
+            GameActivity2048.setLoadable();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    /**
      * Creates the GameView, sets up the onTouchListener and initializes the
      * tiles.
      */
@@ -134,35 +198,45 @@ public class GameView2048 extends GridLayout{
                             if (x2 < -3) {
                                 leftSwipe();
                                 if (isOver()){
+                                    ReadWriteMark();
                                     gameOverListener();
                                 }else if (isWon()){
+                                    ReadWriteMark();
                                     gameWonListener();
                                 }
+
 
                             } else if (x2 > 3) {
                                 rightSwipe();
                                 if (isOver()){
+                                    ReadWriteMark();
                                     gameOverListener();
                                 }
                                 else if (isWon()){
+                                    ReadWriteMark();
                                     gameWonListener();
                                 }
+
                             }
                         } else {
                             if (y2 < -3) {
                                 upSwipe();
                                 if (isOver()) {
+                                    ReadWriteMark();
                                     gameOverListener();
                                 }
                                 else if (isWon()){
+                                    ReadWriteMark();
                                     gameWonListener();
                                 }
                             } else if (y2 > 3) {
                                 downSwipe();
                                 if (isOver()) {
+                                    ReadWriteMark();
                                     gameOverListener();
                                 }
                                 else if (isWon()){
+                                    ReadWriteMark();
                                     gameWonListener();
                                 }
                             }
@@ -175,7 +249,6 @@ public class GameView2048 extends GridLayout{
         this.setColumnCount(4);
         start();
     }
-
 
     @Override
     protected void onDraw(Canvas c){
@@ -319,6 +392,21 @@ public class GameView2048 extends GridLayout{
             }
         }
     }
+
+    /**
+     * Update the bufferTiles of the game based on a flat list of integers.
+     * @param tileNum
+     */
+    public void updateBufferTiles(int[] tileNum) {
+        Integer newBackground;
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                newBackground = new Integer(tileNum[row * 4 + col]);
+                bufferTiles[row][col] = new Tile2048(getContext(), newBackground);
+            }
+        }
+    }
+
     /**
      * Pushes a list of int represents current game state to the stack.
      */
@@ -345,7 +433,9 @@ public class GameView2048 extends GridLayout{
     }
 
 
-
+    /**
+     * genereate a new 2 tile if moved.
+     */
     private void generateIfMoved (){
         if (isMoved){
             generateRamBackground();
@@ -386,6 +476,7 @@ public class GameView2048 extends GridLayout{
             }
         }
         generateIfMoved();
+        saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
     }
 
@@ -421,6 +512,7 @@ public class GameView2048 extends GridLayout{
             }
         }
         generateIfMoved();
+        saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
     }
 
@@ -456,6 +548,7 @@ public class GameView2048 extends GridLayout{
             }
         }
         generateIfMoved();
+        saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
     }
 
@@ -491,6 +584,7 @@ public class GameView2048 extends GridLayout{
             }
         }
         generateIfMoved();
+        saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
     }
 
@@ -573,5 +667,25 @@ public class GameView2048 extends GridLayout{
             }
         }
         return true;
+    }
+
+    /**
+     * rend / write the game score
+     */
+    private void ReadWriteMark(){
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer value = dataSnapshot.child("mm2048").getValue(Integer.class);
+
+                if (value < score){
+                    mRef.child("mm2048").setValue(score);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }
