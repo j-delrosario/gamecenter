@@ -51,11 +51,11 @@ public class GameLaunchCentreActivity extends AppCompatActivity {
                 Integer mark1 = dataSnapshot.child(Email).child("mmsliding").getValue(Integer.class);
                 RecyclerView recycleView = findViewById(R.id.board_list);
                 List<game_centre_item> mlist = new ArrayList<>();
-                mlist.add(new game_centre_item(R.drawable.gcbackground1, "SlidingTiles", mark1.toString()));
+                mlist.add(new game_centre_item(R.drawable.sliding, "SlidingTiles", mark1.toString()));
                 Integer mark2 = dataSnapshot.child(Email).child("mmmatching").getValue(Integer.class);
-                mlist.add(new game_centre_item(R.drawable.gcbackground2, "MatchingTiles", mark2.toString()));
+                mlist.add(new game_centre_item(R.drawable.tilematching, "MatchingTiles", mark2.toString()));
                 Integer mark3 = dataSnapshot.child(Email).child("mm2048").getValue(Integer.class);
-                mlist.add(new game_centre_item(R.drawable.gcbackground3, "2048", mark3.toString()));
+                mlist.add(new game_centre_item(R.drawable.s_2048, "2048", mark3.toString()));
                 CentreAdapter adapter = new CentreAdapter(getApplicationContext(), mlist);
                 recycleView.setAdapter(adapter);
                 recycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -66,8 +66,6 @@ public class GameLaunchCentreActivity extends AppCompatActivity {
 
             }
         });
-
-
 
 
     }

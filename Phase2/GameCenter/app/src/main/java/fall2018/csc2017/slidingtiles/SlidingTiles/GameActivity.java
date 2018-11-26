@@ -40,6 +40,11 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivity extends AppCompatActivity implements Observer{
 
     /**
+     * The game name.
+     */
+    public static final String gameName = "SlidingTiles";
+
+    /**
      * The board manager.
      */
     private BoardManager boardManager;
@@ -64,40 +69,41 @@ public class GameActivity extends AppCompatActivity implements Observer{
      */
     public static int intNumMoves;
 
-
-    /**
-     * A handler for the autosave Thread.
-     */
-    final Handler autosaveTimer = new Handler();
-
     /**
      * A handler for the timing score.
      */
     final Handler timingScore = new Handler();
 
-
+    /**
+     * clear the time score to 0
+     */
     public static void clearTimeScore(){
         intTimeScore = 0;
     }
+
+    /**
+     * clear move score to 0
+     */
     public static void clearNumMoves(){
         intNumMoves = 0;
     }
+
+    /**
+     * returns the total score.
+     * @return
+     */
     public static double getScore() {
         return Math.ceil((10000 - 10 * GameActivity.intNumMoves)/ 0.03 * GameActivity.intTimeScore);
     }
 
     /**
-     * A Runnable varible saving the game every 5 seconds.
+     * autosave the current state.
      */
-    private Runnable autoSave = new Runnable(){
-        @Override
-        public void run() {
-            autosaveTimer.postDelayed(this, 8000);
-            saveToFile(StartingActivity.SAVE_FILENAME);
-            saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
-            makeToastText("Game Saved");
-        }
-    };
+    private void autosave(){
+        saveToFile(StartingActivity.SAVE_FILENAME);
+        saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
+        makeToastText("Game Saved");
+    }
 
     /**
      * A runnabele variable counting the time.
@@ -112,6 +118,10 @@ public class GameActivity extends AppCompatActivity implements Observer{
 
     // Grid View and calculated column height and width based on device size
     private GestureDetectGridView gridView;
+
+    /**
+     * column width and height int.
+     */
     private static int columnWidth, columnHeight;
 
     /**
@@ -147,7 +157,6 @@ public class GameActivity extends AppCompatActivity implements Observer{
     public void display() {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
-
     }
 
     /**
@@ -186,15 +195,11 @@ public class GameActivity extends AppCompatActivity implements Observer{
                         columnHeight = displayHeight / Board.NUM_ROWS;
 
                         display();
-                        autosaveTimer.postDelayed(autoSave, 5000);
                         timingScore.postDelayed(timing, 5000);
                         StartingActivity.setBool();
                     }
                 });
     }
-
-
-
 
     /**
      * Create the buttons for displaying the tiles.
@@ -280,7 +285,6 @@ public class GameActivity extends AppCompatActivity implements Observer{
         super.onPause();
         saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
         saveToFile(StartingActivity.SAVE_FILENAME);
-        autosaveTimer.removeCallbacks(autoSave);
     }
 
     /**
@@ -325,6 +329,7 @@ public class GameActivity extends AppCompatActivity implements Observer{
     public void update(Observable o, Object arg) {
         updateBoard();
         intNumMoves++;
+        autosave();
         display();
     }
 

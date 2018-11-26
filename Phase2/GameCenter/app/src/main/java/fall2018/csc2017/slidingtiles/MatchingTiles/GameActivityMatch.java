@@ -17,6 +17,8 @@ public class GameActivityMatch extends AppCompatActivity {
 
     private static TextView currentScore;
 
+    public static final String gameName = "MatchingTiles";
+
     public static void showCurrentScore(){
         currentScore.setText(Integer.toString(BoardMatch.getScore()));
     }

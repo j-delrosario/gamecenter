@@ -16,6 +16,11 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivity2048 extends AppCompatActivity {
 
     /**
+     * The game name.
+     */
+    public static final String gameName = "TwoZeroFourEight";
+
+    /**
      * A GameView2048 for the game view.
      */
     private GameView2048 gameView2048 = new GameView2048(ContextStatic.getAppContext());

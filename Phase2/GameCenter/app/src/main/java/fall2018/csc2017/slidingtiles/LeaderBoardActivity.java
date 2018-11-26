@@ -23,8 +23,11 @@ import fall2018.csc2017.slidingtiles.LeaderBoardComponent.score_board_item;
 import fall2018.csc2017.slidingtiles.R;
 
 public class LeaderBoardActivity extends AppCompatActivity {
+
     public DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+
     private String GameName;
+
     public ArrayList getName(Map<String, Object> users) {
         ArrayList<String> name_list = new ArrayList<>();
         for (Map.Entry<String, Object> entry : users.entrySet()) {
