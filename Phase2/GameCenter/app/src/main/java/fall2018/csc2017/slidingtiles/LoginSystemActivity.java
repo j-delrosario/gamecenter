@@ -3,9 +3,9 @@ package fall2018.csc2017.slidingtiles;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,12 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
 
 public class LoginSystemActivity extends AppCompatActivity {
@@ -40,20 +41,8 @@ public class LoginSystemActivity extends AppCompatActivity {
      */
     private CheckBox Remember;
 
-    /**
-     * An Array containing all the users and scores.
-     */
-    public String[][] userList = StatusSave.Create();
 
-    /**
-     * An string defines the useraccount save file.
-     */
-    public static final String USER_FILENAME = "user_file.ser";
 
-    /**
-     * An string representing the current player's email.
-     */
-    public String emailString;
 
     /** sharedoreferences.
      *
@@ -70,6 +59,7 @@ public class LoginSystemActivity extends AppCompatActivity {
      * A stirng containing text.
      */
     private String text;
+    private DatabaseReference mRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +71,7 @@ public class LoginSystemActivity extends AppCompatActivity {
         Password = findViewById(R.id.etpassword);
         Login = findViewById(R.id.btnlogin);
         SignUp = findViewById(R.id.tvRegister);
-
-        emailString = Email.getText().toString();
-        loadFromFile(USER_FILENAME);
-        if (!(userList == null)) {
-            StatusSave.updateList(userList);
-        }
-        else{
-            userList = StatusSave.Create();
-        }
-
+        mRef = FirebaseDatabase.getInstance().getReference();
         Remember = findViewById(R.id.Loginchecbox);
         if (sharedPreferences.getBoolean("Remember", false)) {
             Remember.setChecked(true);
@@ -98,6 +79,8 @@ public class LoginSystemActivity extends AppCompatActivity {
             Remember.setChecked(false);
         }
         LoadData();
+
+
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,9 +90,8 @@ public class LoginSystemActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Login information cannot be empty", Toast
                     .LENGTH_SHORT).show();
                 }else{
-                EnterGameCentre(Email.getText().toString(), Password.getText().toString());
-                userList = StatusSave.NameNPassword;
-                saveToFile(USER_FILENAME);
+                EnterGameCentre();
+
 
                 }
             }
@@ -127,60 +109,36 @@ public class LoginSystemActivity extends AppCompatActivity {
 
     /**
      * A function describes behaviours entering the GAME CENTRE.
-     * @param username
-     * @param password
+
      */
-    private void EnterGameCentre(String username, String password){
-        if (StatusSave.FindUser(username)){
-            if (StatusSave.RightUser(username, password)){
-                GameLaunchCentreActivity.emailString = emailString;
-                Intent intent = new Intent(this, GameLaunchCentreActivity.class);
-                startActivity(intent);
-                SaveData();
-            }else{Toast.makeText(getApplicationContext(), "wrong password", Toast.LENGTH_SHORT).show();
+    private void EnterGameCentre(){
+
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Boolean value = dataSnapshot.child(Email.getText().toString()).exists();
+                if (value){
+                    String Psd = dataSnapshot.child(Email.getText().toString()).child("password").getValue(String.class);
+                    if (Psd.equals(Password.getText().toString())){
+                        GameLaunchCentreActivity.Email = Email.getText().toString();
+                        Intent intent = new Intent (getApplicationContext(), GameLaunchCentreActivity.class);
+                        startActivity(intent);
+                        SaveData();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Password is wrong", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please Register", Toast.LENGTH_SHORT).show();
+                }
             }
-        }else{
-            Toast.makeText(getApplicationContext(), "Please Register", Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    /**
-     * Load the board manager from fileName.
-     *
-     * @param fileName the name of the file
-     */
-    private void loadFromFile(String fileName) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        try {
-            InputStream inputStream = this.openFileInput(fileName);
-            if (inputStream != null) {
-                ObjectInputStream input = new ObjectInputStream(inputStream);
-                userList = (String[][]) input.readObject();
-                inputStream.close();
             }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "Username not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        } catch (ClassNotFoundException e) {
-            Log.e("login activity", "File contained unexpected data type: " + e.toString());
-        }
-    }
+        });
 
-    /**
-     * Save the board manager to fileName.
-     *
-     * @param fileName the name of the file
-     */
-    public void saveToFile(String fileName) {
-        try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(
-                    this.openFileOutput(fileName, MODE_PRIVATE));
-            outputStream.writeObject(userList);
-            outputStream.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
+
     }
 
     /**
@@ -209,5 +167,6 @@ public class LoginSystemActivity extends AppCompatActivity {
         text = sharedPreferences.getString("Password", "");
         Password.setText((text));
     }
+
 
 }

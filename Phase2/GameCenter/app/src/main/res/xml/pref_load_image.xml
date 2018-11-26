@@ -8,7 +8,7 @@
 
 
     <Preference android:title="@string/pref_title_load_image">
-        <intent android:action="fall2018.csc2017.slidingtiles.AndroidSelectImage" />
+        <intent android:action="fall2018.csc2017.slidingtiles.slidingTiles.AndroidSelectImage" />
     </Preference>
 
 </PreferenceScreen>

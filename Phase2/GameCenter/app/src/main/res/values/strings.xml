@@ -1,9 +1,11 @@
 <resources>
-    <string name="app_name">Game Launch Centre</string>
+    <string name="app_name">Game Centre</string>
     <string name="load_saved_game">Load Game</string>
     <string name="new_game">New Game</string>
     <string name="welcome_to_sliding_tiles_n_a_puzzle_game_where_you_must_arrange_the_numbers_in_the_correct_order">Welcome To Sliding Tiles   A Puzzle Game where you must arrange the numbers in the correct order</string>
     <string name="save_game">Save Game</string>
+    <string name="saved_game">SAVED</string>
+    <string name="scoreBoard">Scoreboard</string>
 
     <!-- Strings related to Settings -->s
     <string name="settings">Settings</string>
@@ -39,7 +41,9 @@
         <item>4</item>
         <item>5</item>
     </string-array>
-	
+
+    <string name="sliding_tiles_name">Magic Square</string>
+    <string name="currentScore">Current Score</string>
     <string name="grade1">Grade1</string>
     <string name="grade2">Grade2</string>
     <string name="grade3">Grade3</string>
@@ -58,4 +62,10 @@
     <string name="registernickname">Nickname</string>
     <string name="leaderboard_button">LeaderBoard</string>string>
     <string name="Logincheckbox">Remember the username and password</string>
+    <string name="Menus">Menus</string>
+    <string name="title_activity_new_centre">NewCentreActivity</string>
+    <string name="myscoreboard">Your highest scores</string>
+    <string name="LeaderBoardButton">LeaderBoard</string>
+    <string name="two048">2048</string>
+
 </resources>

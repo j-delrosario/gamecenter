@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/match_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="7"
+    android:background="@android:color/holo_blue_bright"
+    android:backgroundTint="@color/colorPrimaryDarkMT"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    tools:context="fall2018.csc2017.slidingtiles.MatchingTiles.GameActivityMatch">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:fontFamily="@font/audiowide"
+            android:text="MATCH"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+            android:textColor="@color/colorPrimary"
+            android:textSize="70dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:text="MATCH">
+
+            <Button
+                android:id="@+id/new_game"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/new_game"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDarkMT"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/scoreboard_2048"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/scoreBoard"
+                android:textColor="@color/colorPrimaryDarkMT"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="@font/audiowide"
+                android:text="@string/currentScore"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="149dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="@font/audiowide"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <fall2018.csc2017.slidingtiles.MatchingTiles.GameViewMatch
+        android:id="@+id/gameViewMatch"
+        android:layout_width="369dp"
+        android:layout_height="333dp"
+        android:layout_marginLeft="23dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/colorPrimaryDarkMT">
+
+    </fall2018.csc2017.slidingtiles.MatchingTiles.GameViewMatch>
+
+
+
+</LinearLayout>
