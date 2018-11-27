@@ -13,11 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
@@ -42,6 +41,10 @@ public class LoginSystemActivity extends AppCompatActivity {
      * A checkbox to Remember the user account.
      */
     private CheckBox Remember;
+    /**
+     * A firebase authentication to check user's email account.
+     */
+    private FirebaseAuth auth;
 
     /** sharedoreferences.
      *
@@ -63,10 +66,6 @@ public class LoginSystemActivity extends AppCompatActivity {
      */
     private String text;
 
-    /**
-     * An database reference.
-     */
-    private DatabaseReference mRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,7 @@ public class LoginSystemActivity extends AppCompatActivity {
         Password = findViewById(R.id.etpassword);
         Login = findViewById(R.id.btnlogin);
         SignUp = findViewById(R.id.tvRegister);
-        mRef = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
         Remember = findViewById(R.id.Loginchecbox);
         if (sharedPreferences.getBoolean("Remember", false)) {
             Remember.setChecked(true);
@@ -95,7 +94,21 @@ public class LoginSystemActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Login information cannot be empty", Toast
                     .LENGTH_SHORT).show();
                 }else{
-                EnterGameCentre();
+                    auth.signInWithEmailAndPassword(Email.getText().toString(), Password.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()){
+                                        Toast.makeText(getApplicationContext(), "You have logged in", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                        Intent intent = new Intent (getApplicationContext(), GameLaunchCentreActivity.class);
+                                        SaveData();
+                                        startActivity(intent);
+                                    }else{
+                                        Toast.makeText(getApplicationContext(), "Fail to log in", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 }
             }
         });
@@ -109,34 +122,6 @@ public class LoginSystemActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * A function describes behaviours entering the GAME CENTRE.
-     */
-    private void EnterGameCentre(){
-
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Boolean value = dataSnapshot.child(Email.getText().toString()).exists();
-                if (value){
-                    String Psd = dataSnapshot.child(Email.getText().toString()).child("password").getValue(String.class);
-                    if (Psd.equals(Password.getText().toString())){
-                        GameLaunchCentreActivity.Email = Email.getText().toString();
-                        Intent intent = new Intent (getApplicationContext(), GameLaunchCentreActivity.class);
-                        startActivity(intent);
-                        SaveData();
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Password is wrong", Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    Toast.makeText(getApplicationContext(), "Please Register", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
 
     /**
      * Save username/password.
