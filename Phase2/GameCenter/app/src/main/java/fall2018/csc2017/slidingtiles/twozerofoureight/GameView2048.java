@@ -14,6 +14,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.GridLayout;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -96,7 +97,7 @@ public class GameView2048 extends GridLayout{
     /**
      * An database store the scores.
      */
-    private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(GameLaunchCentreActivity.Email);
+    private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
 
     /**
      * Returns the current score of the game.
@@ -734,13 +735,14 @@ public class GameView2048 extends GridLayout{
      * rend / write the game score
      */
     private void ReadWriteMark(){
+        final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Integer value = dataSnapshot.child("mm2048").getValue(Integer.class);
+                Integer value = dataSnapshot.child(currentUid).child("mm2048").getValue(Integer.class);
 
                 if (value < score){
-                    mRef.child("mm2048").setValue(score);
+                    mRef.child(currentUid).child("mm2048").setValue(score);
                 }
             }
             @Override

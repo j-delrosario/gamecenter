@@ -1,6 +1,5 @@
 package fall2018.csc2017.slidingtiles.GameCentre;
 
-import android.content.Intent;
 
 /**
  * A class holding game centre items.
@@ -17,21 +16,15 @@ public class game_centre_item {
      */
     String ProfileName;
 
-    /**
-     * A string keeping the max mark
-     */
-    String ProfileMaxMark;
 
     /**
      * Initialize a game cetner item class
      * @param background
      * @param profileName
-     * @param profileMaxMark
      */
-    public game_centre_item(int background, String profileName, String profileMaxMark) {
+    public game_centre_item(int background, String profileName) {
         this.background = background;
         ProfileName = profileName;
-        ProfileMaxMark = profileMaxMark;
     }
 
     /**
@@ -66,21 +59,6 @@ public class game_centre_item {
         ProfileName = profileName;
     }
 
-    /**
-     * return the profile max mark.
-     * @return
-     */
-    public String getProfileMaxMark() {
-        return ProfileMaxMark;
-    }
-
-    /**
-     * Set the profile max mark.
-     * @param profileMaxMark
-     */
-    public void setProfileMaxMark(String profileMaxMark) {
-        ProfileMaxMark = profileMaxMark;
-    }
 
 
 

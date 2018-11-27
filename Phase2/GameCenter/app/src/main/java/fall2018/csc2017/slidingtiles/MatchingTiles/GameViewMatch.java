@@ -17,6 +17,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,7 +57,7 @@ public class GameViewMatch extends GridLayout {
     /**
      * A firebase linked to the database.
      */
-    private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(GameLaunchCentreActivity.Email);
+    private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
 
     /**
      * The board of the game view.
@@ -136,10 +137,10 @@ public class GameViewMatch extends GridLayout {
                     mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Integer value = dataSnapshot.child("mmmatching").getValue(Integer.class);
-
+                            String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            Integer value = dataSnapshot.child(currentUid).child("mmmatching").getValue(Integer.class);
                             if (value < BoardMatch.getScore()){
-                                mRef.child("mmmatching").setValue(BoardMatch.getScore());
+                                mRef.child(currentUid).child("mmmatching").setValue(BoardMatch.getScore());
                             }
                         }
                         @Override

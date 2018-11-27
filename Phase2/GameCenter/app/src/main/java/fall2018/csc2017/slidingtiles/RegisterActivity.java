@@ -9,11 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
@@ -47,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private Button Register;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         Password= findViewById(R.id.PasswordRegister);
         Nickname = findViewById(R.id.NickNameRegister);
         Register = findViewById(R.id.regbutton);
+
         mRef = FirebaseDatabase.getInstance().getReference(Email.getText().toString());
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,40 +68,31 @@ public class RegisterActivity extends AppCompatActivity {
                         Nickname.getText().toString().replaceAll("\\s", "").equals("")) {
                     Toast.makeText(getApplicationContext(), "The register information cannot be empty", Toast.LENGTH_SHORT).show();
                 }else{
-                    Read();
+                    createUser(view);
                 }
             }
         });
 
     }
 
-    /**
-     * Write user info.
-     */
-    private void Write() {
-        User user = new User(Email.getText().toString(), Password.getText().toString(), Nickname.getText().toString(), 0, 0, 0);
-        mRef.child(Email.getText().toString()).setValue(user);
-        Intent intent = new Intent (getApplicationContext(), GameLaunchCentreActivity.class);
-        startActivity(intent);
-        GameLaunchCentreActivity.Email = Email.getText().toString();
-    }
 
-    /**
-     * Read the user info.
-     */
-    private void Read(){
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void createUser(View view){
+        String email = Email.getText().toString();
+        String password = Password.getText().toString();
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Boolean value = dataSnapshot.child(Email.getText().toString()).exists();
-                if (value){
-                    Toast.makeText(getApplicationContext(), "You have registered. Please log in.", Toast.LENGTH_SHORT).show();
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    User user = new User(Email.getText().toString(), Password.getText().toString(), Nickname.getText().toString(), 0, 0, 0);
+                    Toast.makeText(getApplicationContext(), "Registered", Toast.LENGTH_SHORT).show();
+                    mRef.child(firebaseUser.getUid()).setValue(user);
+                    Intent intent = new Intent (getApplicationContext(), GameLaunchCentreActivity.class);
+                    startActivity(intent);
                 }else{
-                    Write();
+                    Toast.makeText(getApplicationContext(), "Fail to register", Toast.LENGTH_SHORT).show();
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
