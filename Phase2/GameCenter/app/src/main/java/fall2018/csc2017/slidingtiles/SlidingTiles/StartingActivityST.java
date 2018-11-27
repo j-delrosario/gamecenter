@@ -9,25 +9,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
+
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * Starting Activity for Sliding Tiles.
+ */
 public class StartingActivityST extends StartingActivity implements Runnable{
+
+    /**
+     * An int keeps the Size of the row of the current game.
+     */
+    public static int SizeRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         gameName = "SlidingTiles";
         Thread thread = new Thread(StartingActivityST.this);
         thread.setDaemon(true);
         thread.start();
-
         boardManager = new BoardManagerST();
         saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
-
         setContentView(R.layout.activity_starting_st);
-
         addStartButtonListener();
         addLoadButtonListener();
         addSaveButtonListener();
@@ -50,17 +55,20 @@ public class StartingActivityST extends StartingActivity implements Runnable{
     private void updateGameSettings() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String size = prefs.getString("size_list", "");
+        if (size == ""){
+            SizeRow = 4;
+        }
+        else{
+            SizeRow = Integer.parseInt(size);
+        }
         String undo = prefs.getString("undo_list", "");
         boolean use_default_image = prefs.getBoolean("use_default_image", true);
-
         if (!size.equals("")) {
             Board.updateSize(Integer.parseInt(size));
         }
-
         if (!undo.equals("")) {
             BoardManager.updateUndo(Integer.parseInt(undo));
         }
-
         if (GameActivity.hasBackground() && !use_default_image) {
             int[] image_dimensions = GameActivity.getBackgroundDimensions();
             boardManager = new BoardManagerST(image_dimensions[0], image_dimensions[1]);
@@ -82,6 +90,37 @@ public class StartingActivityST extends StartingActivity implements Runnable{
                 GameActivity.clearTimeScore();
                 GameActivity.clearNumMoves();
                 switchToGame();
+            }
+        });
+    }
+
+    /**
+     * Activate the load button.
+     */
+    @Override
+    protected void addLoadButtonListener() {
+        Button loadButton = findViewById(R.id.LoadButton);
+        loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
+                if(testFile.exists()) {
+                    updateGameSettings();
+                    loadFromFile(SAVE_FILENAME);
+                    if (boardManager.getNumRow() != SizeRow ){
+                        makeToastText("Save file has board size of " + String.valueOf(boardManager.getNumRow()) + ", does not match the current size " + String.valueOf(SizeRow));
+                    }
+                    else {
+                    boardManager.clearStack();
+                    GameActivity.clearTimeScore();
+                    GameActivity.clearNumMoves();
+                    makeToastText("Loaded Game");
+                    switchToGame();
+                    }
+                }
+                else {
+                    makeToastText("No Available Save");
+                }
             }
         });
     }

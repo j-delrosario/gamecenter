@@ -33,32 +33,69 @@ import java.util.Collections;
 
 import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 import fall2018.csc2017.slidingtiles.R;
+import fall2018.csc2017.slidingtiles.SlidingTiles.GameActivity;
 
 
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * View for the game matching tile.
+ */
 public class GameViewMatch extends GridLayout {
 
+    /**
+     * An int represents number of rows.
+     */
     private static int NUM_ROW = 4;
+
+    /**
+     * An int represents number of rows.
+     */
     private static int NUM_COL = 4;
+
+    /**
+     * A firebase linked to the database.
+     */
     private DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(GameLaunchCentreActivity.Email);
+
+    /**
+     * The board of the game view.
+     */
     private BoardMatch board = new BoardMatch();
 
+    /**
+     * Initialize A game view for matching tiles.
+     * @param context
+     * @param attr
+     * @param def
+     */
     public GameViewMatch(Context context, AttributeSet attr, int def) {
         super(context, attr, def);
         createGameView();
     }
 
+    /**
+     * Initialize A game view for matching tiles.
+     * @param context
+     * @param attr
+     */
     public GameViewMatch(Context context, AttributeSet attr) {
         super(context, attr);
         createGameView();
     }
 
+    /**
+     * Initialize A game view for matching tiles.
+     * @param context
+     */
     public GameViewMatch(Context context) {
         super(context);
         createGameView();
     }
 
+    /**
+     * Create a game view.
+     */
     private void createGameView() {
         setOnTouchListener(new OnTouchListener() {
 
@@ -73,15 +110,21 @@ public class GameViewMatch extends GridLayout {
         });
         this.setBackgroundColor(0xff959595);
         this.setColumnCount(4);
-        if (load(GameActivityMatch.SAVE_FILENAME)) {
-            board.refresh();
-        } else {
-            start();
-        }
+        start();
     }
 
-    private void tap(int x, int y) {
+    /**
+     * Returns the current board.
+     * @return board
+     */
+    public BoardMatch getBoard(){return board;}
 
+    /**
+     * Defines what happens during a tap.
+     * @param x
+     * @param y
+     */
+    private void tap(int x, int y) {
         int row = y / 220;
         int col = x / 220;
         if (row < NUM_ROW && col < NUM_COL) {
@@ -90,8 +133,6 @@ public class GameViewMatch extends GridLayout {
                 tile.refreshBackground();
                 board.updateSelectedTiles(tile);
                 if (board.isComplete()) {
-                    Activity gameActivity = (Activity) this.getContext();
-                    ((GameActivityMatch)gameActivity).stopSaving();
                     mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -101,19 +142,21 @@ public class GameViewMatch extends GridLayout {
                                 mRef.child("mmmatching").setValue(BoardMatch.getScore());
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
                     endAnimation();
                     makeToastCompletedText();
                 }
             }
+            save(GameActivityMatch.SAVE_FILENAME);
         }
     }
 
+    /**
+     * Start the game and update the boards.
+     */
     private void start() {
         for (int row = 0; row< NUM_ROW; row++) {
             for (int col = 0; col < NUM_COL; col++) {
@@ -124,28 +167,34 @@ public class GameViewMatch extends GridLayout {
         generateRamBackground();
     }
 
+    /**
+     * Save the game to a local file.
+     * @param fileName
+     */
     public void save(String fileName) {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(
                     getContext().openFileOutput(fileName, MODE_PRIVATE));
-            outputStream.writeObject(board);
+            outputStream.writeObject(board.boardSaveValue());
             outputStream.close();
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
 
-    private boolean load(String fileName) {
-        // TODO: LOAD CODE
-        // check if there is a Board stored in the database
-        // set field board to the db board
-        // return true if this was successful
-        // return false if there was no board to load
+    /**
+     * Load a game from a file.
+     * @param fileName
+     * @return
+     */
+    public boolean load(String fileName) {
         try {
             InputStream inputStream = getContext().openFileInput(fileName);
+            Log.i("ROFL", "rrra");
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
-                board = (BoardMatch) input.readObject();
+                int[][][] save = (int[][][]) input.readObject();
+                board = board.boardFromSave(getContext(), save);
                 inputStream.close();
                 return true;
             }
@@ -159,6 +208,9 @@ public class GameViewMatch extends GridLayout {
         return false;
     }
 
+    /**
+     * Generate a ramdom Background.
+     */
     private void generateRamBackground() {
         ArrayList<Integer> randomNumbers = new ArrayList<Integer>();
         ArrayList<Integer> visibleNumbers = new ArrayList<Integer>();
@@ -168,16 +220,13 @@ public class GameViewMatch extends GridLayout {
             randomNumbers.add(new Integer(i));
         }
         Collections.shuffle(randomNumbers);
-
         for (int tileNum = 0; tileNum != 8; tileNum++) {
             visibleNumbers.add(tileNum + 1);
             visibleNumbers.add(tileNum + 1);
         }
-
         for (int i = 0; i < 16; i++) {
             x1 = randomNumbers.get(i) % 4;
             y1 = randomNumbers.get(i) / 4;
-
             TileMatch t = board.getTile(x1, y1);
             t.setBackground(visibleNumbers.get(i));
             t.setVisible();
@@ -194,6 +243,11 @@ public class GameViewMatch extends GridLayout {
         pushTiles(width, width);
     }
 
+    /**
+     * Push tiles to the view.
+     * @param width
+     * @param height
+     */
     private void pushTiles(int width, int height) {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -205,10 +259,15 @@ public class GameViewMatch extends GridLayout {
         }
     }
 
+    /**
+     * An handler for end game animation.
+     */
     private Handler endAnimationHandler = new Handler();
 
+    /**
+     * Defines the end game animation.
+     */
     private void endAnimation(){
-
         final ArrayList<int[]> animateOrder = new ArrayList<>();
         for (int col = 0; col < NUM_COL; col++) {
             animateOrder.add(new int[]{0, col});
@@ -222,7 +281,6 @@ public class GameViewMatch extends GridLayout {
         for (int col = NUM_COL - 1; col >= 0; col--) {
             animateOrder.add(new int[]{3, col});
         }
-
         final Runnable endAnimationRunnable = new Runnable(){
             int[] posToDelete = new int[]{0,0};
             int[] pos = new int[]{0,0};
@@ -271,7 +329,11 @@ public class GameViewMatch extends GridLayout {
                     } else {
                         board.getTile(posToDelete[0], posToDelete[1]).updateBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDarkMT));
                         endAnimationHandler.removeCallbacks(this);
-                        makeToastCorrectnessText();
+                        Activity a = (Activity)getContext();
+                        View v = ((GameActivityMatch)a).findViewById(R.id.gameViewMatch);
+                        if (((GameViewMatch)v).getBoard().isComplete()) {
+                            makeToastCorrectnessText();
+                        }
                     }
                 } catch(ClassCastException e) { e.printStackTrace();}
             }
@@ -280,6 +342,9 @@ public class GameViewMatch extends GridLayout {
         endAnimationHandler.postDelayed(endAnimationRunnable, 1000);
     }
 
+    /**
+     * A toast when the game is completed.
+     */
     private void makeToastCompletedText() {
         Toast toast = Toast.makeText(getContext(), "Game Completed", Toast.LENGTH_LONG);
         View view = toast.getView();
@@ -293,6 +358,9 @@ public class GameViewMatch extends GridLayout {
         toast.show();
     }
 
+    /**
+     * A toast for the correctness text.
+     */
     private void makeToastCorrectnessText() {
         Toast toast = Toast.makeText(getContext(), "MATCHED" + "\n in " + Integer.toString(8 + 100 - BoardMatch.getScore()) + " moves", Toast.LENGTH_LONG);
         View view = toast.getView();
@@ -306,5 +374,4 @@ public class GameViewMatch extends GridLayout {
         textview.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDarkMT));
         toast.show();
     }
-
 }

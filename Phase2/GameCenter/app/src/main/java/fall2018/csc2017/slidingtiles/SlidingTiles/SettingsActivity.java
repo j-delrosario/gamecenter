@@ -57,6 +57,4 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_load_image);
         }
     }
-
-
 }

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class BoardManagerST extends BoardManager {
+
     /**
      * Manage a board that has been pre-populated.
      * @param board the board
@@ -35,6 +36,7 @@ public class BoardManagerST extends BoardManager {
             Collections.shuffle(tiles);
         }
         this.board = new BoardST(tiles);
+        intRow = getRow();
     }
 
     /**
@@ -60,7 +62,7 @@ public class BoardManagerST extends BoardManager {
         Collections.shuffle(tiles);
         this.board = new BoardST(tiles);
         initial_1 = board;
-
+        intRow = getRow();
     }
 
     /**

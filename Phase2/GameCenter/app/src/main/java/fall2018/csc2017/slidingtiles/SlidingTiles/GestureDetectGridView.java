@@ -16,6 +16,9 @@ import android.widget.GridView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Gesture Detector for Sliding tiles.
+ */
 abstract class GestureDetectGridView extends GridView {
     public static final int SWIPE_MIN_DISTANCE = 100;
     protected GestureDetector gDetector;

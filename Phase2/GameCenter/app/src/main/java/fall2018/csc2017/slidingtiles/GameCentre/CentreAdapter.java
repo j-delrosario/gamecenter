@@ -17,6 +17,9 @@ import fall2018.csc2017.slidingtiles.SlidingTiles.StartingActivityST;
 import fall2018.csc2017.slidingtiles.MatchingTiles.GameActivityMatch;
 import fall2018.csc2017.slidingtiles.twozerofoureight.GameActivity2048;
 
+/**
+ * An adapter for game centre
+ */
 public class CentreAdapter extends RecyclerView.Adapter<CentreAdapter.myViewHolder> {
 
     /**

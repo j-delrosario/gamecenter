@@ -22,21 +22,40 @@ import fall2018.csc2017.slidingtiles.LeaderBoardComponent.ScoreAdapter;
 import fall2018.csc2017.slidingtiles.LeaderBoardComponent.score_board_item;
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * Leaderboard activity for 2048.
+ */
 public class LeaderBoardActivity extends AppCompatActivity {
 
+    /**
+     * Firebase database reference.
+     */
     public DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
 
+    /**
+     * String keeps the name of the game.
+     */
     public static String GameName;
 
+    /**
+     * get the username based on the email.
+     * @param users
+     * @return ArrayList
+     */
     public ArrayList getName(Map<String, Object> users) {
         ArrayList<String> name_list = new ArrayList<>();
         for (Map.Entry<String, Object> entry : users.entrySet()) {
             Map singleUser = (Map) entry.getValue();
-            name_list.add((String) singleUser.get("email"));
+            name_list.add((String) singleUser.get("nickname"));
         }
         return name_list;
     }
 
+    /**
+     * Get the score of the user.
+     * @param users
+     * @return Arraylist.
+     */
     public ArrayList getScore(Map<String, Object> users){
         ArrayList<Long> score_list = new ArrayList<>();
         for (Map.Entry<String, Object> entry: users.entrySet()){
@@ -46,7 +65,11 @@ public class LeaderBoardActivity extends AppCompatActivity {
         return score_list;
     }
 
-
+    /**
+     * A bubblesort for to sort scores.
+     * @param list
+     * @param list_name
+     */
     public void bubblesrt(ArrayList<Long> list, ArrayList<String> list_name)
     {
         Long temp;
@@ -68,14 +91,12 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_score_board);
-
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -89,15 +110,12 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 for (int i=0; i < score_list.size(); i++) {
                     mlist.add(new score_board_item(name_list.get(i), score_list.get(i).toString()));
                 }
-
                 ScoreAdapter adapter = new ScoreAdapter(getApplicationContext(), mlist);
                 recycleView.setAdapter(adapter);
                 recycleView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }

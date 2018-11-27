@@ -9,7 +9,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.GridLayout;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,9 +38,24 @@ import static android.content.Context.MODE_PRIVATE;
 public class GameView2048 extends GridLayout{
 
     /**
+     * An scale animation for tiles.
+     */
+    private ScaleAnimation scaleTiles = new ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+    /**
      * An int keeping the width for each tile view.
      */
     private int Width;
+
+    /**
+     * An int keeping the width of the canvas.
+     */
+    private int canvasWidth;
+
+    /**
+     * An int keeping the height of the canvas.
+     */
+    private int canvasHeight;
 
     /**
      * A boolean for checking if any move was made.
@@ -47,7 +65,7 @@ public class GameView2048 extends GridLayout{
     /**
      * An int keeping the current user of the player.
      */
-    private int score = 0;
+    private static int score = 0;
 
     /**
      * An int represents the number of row.
@@ -92,7 +110,7 @@ public class GameView2048 extends GridLayout{
      * Set the score to int i.
      * @param i
      */
-    public void setScore(int i){
+    public static void setScore(int i){
         int newInt = new Integer(i);
         score = newInt;
     }
@@ -109,6 +127,7 @@ public class GameView2048 extends GridLayout{
      */
     public GameView2048(Context context, AttributeSet attr, int def) {
         super(context, attr, def);
+        scaleTiles.setDuration(200);
         createGameView();
     }
 
@@ -117,6 +136,7 @@ public class GameView2048 extends GridLayout{
      */
     public GameView2048(Context context, AttributeSet attr) {
         super(context, attr);
+        scaleTiles.setDuration(200);
         createGameView();
     }
 
@@ -125,6 +145,7 @@ public class GameView2048 extends GridLayout{
      */
     public GameView2048(Context context) {
         super(context);
+        scaleTiles.setDuration(200);
         createGameView();
     }
 
@@ -140,7 +161,12 @@ public class GameView2048 extends GridLayout{
                 ObjectInputStream input = new ObjectInputStream(inputStream);
                 int[] intBoard = (int[]) input.readObject();
                 updateTiles(intBoard);
-                updateBufferTiles(intBoard);
+                for (int row = 0; row< 4; row++) {
+                    for (int col = 0; col < 4; col++) {
+                        Tile2048 t1 = new Tile2048(ContextStatic.getAppContext(), 0);
+                        bufferTiles[row][col] = t1;
+                    }
+                }
                 clearTheInitial();
                 setTheInitial(tilesToString(tiles));
                 inputStream.close();
@@ -193,7 +219,6 @@ public class GameView2048 extends GridLayout{
                     case MotionEvent.ACTION_UP:
                         x2 = direction.getX() - x1;
                         y2 = direction.getY() - y1;
-
                         if (Math.abs(x2) > Math.abs(y2)) {
                             if (x2 < -3) {
                                 leftSwipe();
@@ -204,8 +229,6 @@ public class GameView2048 extends GridLayout{
                                     ReadWriteMark();
                                     gameWonListener();
                                 }
-
-
                             } else if (x2 > 3) {
                                 rightSwipe();
                                 if (isOver()){
@@ -216,7 +239,6 @@ public class GameView2048 extends GridLayout{
                                     ReadWriteMark();
                                     gameWonListener();
                                 }
-
                             }
                         } else {
                             if (y2 < -3) {
@@ -241,6 +263,9 @@ public class GameView2048 extends GridLayout{
                                 }
                             }
                         }
+                        invalidate();
+                        GameActivity2048.gameScore = score;
+                        GameActivity2048.saveScoreToFile(GameActivity2048.CURRENT_SCORE);
                         break;
                 }
                 return true;
@@ -253,9 +278,27 @@ public class GameView2048 extends GridLayout{
     @Override
     protected void onDraw(Canvas c){
         super.onDraw(c);
+        canvasWidth = c.getWidth();
+        canvasHeight = c.getHeight();
         int width = (Math.min(c.getWidth(), c.getHeight())) / 4;
-        removeAllViews();
-        pushTiles(width, width);
+        if (isChanged()) {
+            removeAllViews();
+            pushTiles(width, width);
+            setBuffer();
+        }
+    }
+
+    /**
+     * Set the buffer same as tiles.
+     */
+    private void setBuffer(){
+        for (int row = 0; row< 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                int backgroundInt = new Integer(tiles[row][col].getbackground());
+                Tile2048 t = new Tile2048(getContext(), backgroundInt);
+                bufferTiles[row][col] = t;
+            }
+        }
     }
 
     /**
@@ -271,6 +314,7 @@ public class GameView2048 extends GridLayout{
             }
         }
     }
+
     /**
      * Generate 2 random tiles with 2 as background
      * Called in the creation of the game.
@@ -292,6 +336,7 @@ public class GameView2048 extends GridLayout{
         }
         if (x1 >= 0 && y1 >= 0){
             Tile2048 t = new Tile2048(getContext(), 2);
+            t.startAnimation(scaleTiles);
             tiles[y1][x1] = t;
         }
     }
@@ -317,12 +362,10 @@ public class GameView2048 extends GridLayout{
      * Sets the inital state of the game.
      */
     public void start() {
-        clearCurrentScore();
         for (int row = 0; row< 4; row++) {
             for (int col = 0; col < 4; col++) {
                 Tile2048 t = new Tile2048(ContextStatic.getAppContext(), 0);
                 tiles[row][col] = t;
-
             }
         }
         generateRamBackground();
@@ -331,11 +374,11 @@ public class GameView2048 extends GridLayout{
             for (int col = 0; col < 4; col++) {
                 Tile2048 t1 = new Tile2048(ContextStatic.getAppContext(), 0);
                 bufferTiles[row][col] = t1;
-
             }
         }
         clearTheInitial();
         setTheInitial(tilesToString(tiles));
+        invalidate();
     }
 
     /**
@@ -380,6 +423,16 @@ public class GameView2048 extends GridLayout{
     }
 
     /**
+     * Pushes a list of int represents current game state to the stack.
+     */
+    public void pushScores(){
+        Integer i = score;
+        if (isChanged()){
+            GameActivity2048.getScoreStack().push(i);
+        }
+    }
+
+    /**
      * Update the current state of the game based on a flat list of integers.
      * @param tileNum
      */
@@ -391,6 +444,7 @@ public class GameView2048 extends GridLayout{
                 tiles[row][col] = new Tile2048(getContext(), newBackground);
             }
         }
+        invalidate();
     }
 
     /**
@@ -432,7 +486,6 @@ public class GameView2048 extends GridLayout{
         setScore(getScore() + sc);
     }
 
-
     /**
      * genereate a new 2 tile if moved.
      */
@@ -467,6 +520,7 @@ public class GameView2048 extends GridLayout{
                         } else if (tiles[row][col].equals(tiles[row][y])) {
                             tiles[row][col] = new Tile2048(getContext(), tiles[row][col].getbackground()*2);
                             tiles[row][y] = new Tile2048(getContext(), 0);
+                            tiles[row][col].startAnimation(scaleTiles);
                             isMoved = true;
                             addScore(tiles[row][col].getbackground());
                         }
@@ -478,6 +532,7 @@ public class GameView2048 extends GridLayout{
         generateIfMoved();
         saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
+        pushScores();
     }
 
     /**
@@ -503,6 +558,7 @@ public class GameView2048 extends GridLayout{
                         } else if (tiles[row][col].equals(tiles[row][y])) {
                             tiles[row][col] = new Tile2048(getContext(), tiles[row][col].getbackground()*2);
                             tiles[row][y] = new Tile2048(getContext(), 0);
+                            tiles[row][col].startAnimation(scaleTiles);
                             isMoved = true;
                             addScore(tiles[row][col].getbackground());
                         }
@@ -514,6 +570,7 @@ public class GameView2048 extends GridLayout{
         generateIfMoved();
         saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
+        pushScores();
     }
 
     /**
@@ -539,6 +596,7 @@ public class GameView2048 extends GridLayout{
                         } else if (tiles[row][col].equals(tiles[x][col])) {
                             tiles[row][col] = new Tile2048(getContext(), tiles[row][col].getbackground() * 2);
                             tiles[x][col] = new Tile2048(getContext(), 0);
+                            tiles[row][col].startAnimation(scaleTiles);
                             isMoved = true;
                             addScore(tiles[row][col].getbackground());
                         }
@@ -550,6 +608,7 @@ public class GameView2048 extends GridLayout{
         generateIfMoved();
         saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
+        pushScores();
     }
 
     /**
@@ -575,6 +634,7 @@ public class GameView2048 extends GridLayout{
                         } else if (tiles[row][col].equals(tiles[x][col])) {
                             tiles[row][col] = new Tile2048(getContext(), tiles[row][col].getbackground() * 2);
                             tiles[x][col] = new Tile2048(getContext(), 0);
+                            tiles[row][col].startAnimation(scaleTiles);
                             isMoved = true;
                             addScore(tiles[row][col].getbackground());
                         }
@@ -586,6 +646,7 @@ public class GameView2048 extends GridLayout{
         generateIfMoved();
         saveToFile(GameActivity2048.SAVE_FILENAME);
         pushBoards();
+        pushScores();
     }
 
     /**
@@ -682,7 +743,6 @@ public class GameView2048 extends GridLayout{
                     mRef.child("mm2048").setValue(score);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }

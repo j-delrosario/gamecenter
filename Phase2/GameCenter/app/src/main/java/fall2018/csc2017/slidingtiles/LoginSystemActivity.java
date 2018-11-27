@@ -21,7 +21,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
-
+/**
+ * Activity for the login system.
+ */
 public class LoginSystemActivity extends AppCompatActivity {
 
     /**
@@ -41,13 +43,14 @@ public class LoginSystemActivity extends AppCompatActivity {
      */
     private CheckBox Remember;
 
-
-
-
     /** sharedoreferences.
      *
      */
     SharedPreferences sharedPreferences;
+
+    /**
+     * An preference editor.
+     */
     SharedPreferences.Editor editor;
 
     /**
@@ -59,6 +62,10 @@ public class LoginSystemActivity extends AppCompatActivity {
      * A stirng containing text.
      */
     private String text;
+
+    /**
+     * An database reference.
+     */
     private DatabaseReference mRef;
 
     @Override
@@ -80,8 +87,6 @@ public class LoginSystemActivity extends AppCompatActivity {
         }
         LoadData();
 
-
-
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,8 +96,6 @@ public class LoginSystemActivity extends AppCompatActivity {
                     .LENGTH_SHORT).show();
                 }else{
                 EnterGameCentre();
-
-
                 }
             }
         });
@@ -104,12 +107,10 @@ public class LoginSystemActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     /**
      * A function describes behaviours entering the GAME CENTRE.
-
      */
     private void EnterGameCentre(){
 
@@ -131,14 +132,10 @@ public class LoginSystemActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Please Register", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
-
     }
 
     /**
@@ -167,6 +164,4 @@ public class LoginSystemActivity extends AppCompatActivity {
         text = sharedPreferences.getString("Password", "");
         Password.setText((text));
     }
-
-
 }

@@ -49,7 +49,6 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.myViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ScoreAdapter.myViewHolder holder, int position) {
-
         String temp = new String();
         holder.tv_game_name.setText(temp.valueOf(position + 1)+ "." + mData.get(position).getGameName());
         holder.tv_game_score.setText(mData.get(position).getGameMark());

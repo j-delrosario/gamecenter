@@ -13,6 +13,11 @@ abstract class BoardManager implements Serializable {
     protected Board board;
 
     /**
+     * An int represent the number of row of current board.
+     */
+    public int intRow;
+
+    /**
      * The initial state of the Board in BoardManager
      */
     public static Board initial_1;
@@ -31,12 +36,14 @@ abstract class BoardManager implements Serializable {
      * Default Constructor
      */
     BoardManager() {}
+
     /**
      * Manage a board that has been pre-populated.
      * @param board the board
      */
     BoardManager(Board board) {
         this.board = board;
+        intRow = getRow();
     }
 
     /**
@@ -54,6 +61,22 @@ abstract class BoardManager implements Serializable {
     }
 
     /**
+     * Return the Row number of the board.
+     * @return int
+     */
+    public int getRow(){
+        return board.NUM_ROWS;
+    }
+
+    /**
+     * Get the number of the row from the boardManager.
+     * @return
+     */
+    public int getNumRow(){
+        return intRow;
+    }
+
+    /**
      * Return True if numUndo is changed.
      * @param num
      * @return changUndo
@@ -67,6 +90,11 @@ abstract class BoardManager implements Serializable {
         return changeUndo;
     }
 
+    /**
+     * an boolean defines if the tap is valid.
+     * @param position
+     * @return
+     */
     abstract boolean isValidTap(int position);
 
     /**

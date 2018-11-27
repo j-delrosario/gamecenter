@@ -4,10 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import fall2018.csc2017.slidingtiles.LeaderBoardActivity;
 import fall2018.csc2017.slidingtiles.R;
 
@@ -18,13 +27,19 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivity2048 extends AppCompatActivity {
 
     /**
+     * Game Score
+     */
+    public static final String CURRENT_SCORE = "save_score.ser";
+
+    /**
+     * Game Score
+     */
+    public static int gameScore = 0;
+
+    /**
      * The main save file.
      */
     public static final String SAVE_FILENAME = "save_file_2048.ser";
-    /**
-     * A temporary save file.
-     */
-    public static final String TEMP_SAVE_FILENAME = "save_file_2048_tmp.ser";
 
     /**
      * A GameView2048 for the game view.
@@ -57,6 +72,18 @@ public class GameActivity2048 extends AppCompatActivity {
     public static TileNumStack stack = new TileNumStack(stackSize);
 
     /**
+     * A stack for the game scores.
+     */
+    public static ScoreStack scoreStack = new ScoreStack(stackSize);
+
+    /**
+     * return the score stack
+     */
+    public static ScoreStack getScoreStack(){
+        return scoreStack;
+    }
+
+    /**
      * Returns the stack.
      * @return stack
      */
@@ -71,10 +98,22 @@ public class GameActivity2048 extends AppCompatActivity {
         gameView2048 = findViewById(R.id.gameView2048);
         currentScore = (TextView) findViewById(R.id.score);
         currentScore.setTextSize(10);
+        File testScore = new File(getApplicationContext().getFilesDir(), CURRENT_SCORE);
+        if (testScore.exists()){
+            loadScoreFromFile(CURRENT_SCORE);
+            currentScore.setText(String.valueOf(gameScore));
+            gameView2048.setScore(gameScore);
+        }
         addUndoButtonListener();
         addNewGameButtonListener();
         addScoreBoardButtonListener();
         addLoadButtonListener();
+        File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
+        if(testFile.exists()) {
+            gameView2048.loadFromFile(SAVE_FILENAME);
+            //clearStack();
+            makeToastLoadedText();
+        }
         handler.post(new Runnable(){
             @Override
             public void run(){
@@ -92,12 +131,52 @@ public class GameActivity2048 extends AppCompatActivity {
     }
 
     /**
+     * Load the board manager from fileName.
+     *
+     * @param fileName the name of the file
+     */
+    protected void loadScoreFromFile(String fileName) {
+        try {
+            InputStream inputStream = this.openFileInput(fileName);
+            if (inputStream != null) {
+                ObjectInputStream input = new ObjectInputStream(inputStream);
+                int score = (int) input.readObject();
+                gameScore = score;
+                Toast.makeText(this, String.valueOf(gameScore), Toast.LENGTH_SHORT).show();
+            }
+        } catch (FileNotFoundException e) {
+            //Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            //Log.e("login activity", "Can not read file: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            //Log.e("login activity", "File contained unexpected data type: " + e.toString());
+        }
+    }
+
+    /**
+     * Save the board manager to fileName.
+     *
+     * @param fileName the name of the file
+     */
+    public static void saveScoreToFile(String fileName) {
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(
+                    ContextStatic.getAppContext().openFileOutput(fileName, MODE_PRIVATE));
+            outputStream.writeObject(gameScore);
+            outputStream.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    /**
      * Dispatch onPause() to fragments.
      */
     @Override
     protected void onPause() {
         super.onPause();
-        clearStack();
+        gameScore = gameView2048.getScore();
+        //clearStack();
         //mGLView.onPause();
     }
 
@@ -130,7 +209,8 @@ public class GameActivity2048 extends AppCompatActivity {
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(loadable) {
+                File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
+                if(testFile.exists()) {
                     gameView2048.loadFromFile(SAVE_FILENAME);
                     clearStack();
                     makeToastLoadedText();
@@ -142,9 +222,13 @@ public class GameActivity2048 extends AppCompatActivity {
         });
     }
 
+    /**
+     * Set the loadable boolean if there are files to load from.
+     */
     public static void setLoadable(){
         loadable = true;
     }
+
     /**
      * Display that a game was loaded successfully.
      */
@@ -185,6 +269,8 @@ public class GameActivity2048 extends AppCompatActivity {
         NewGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gameView2048.clearCurrentScore();
+                gameScore = 0;
                 clearStack();
                 gameView2048.start();
             }
@@ -206,23 +292,37 @@ public class GameActivity2048 extends AppCompatActivity {
     }
 
     /**
+     * update the scores in view and activity
+     */
+    public void updateScores(int sc){
+        gameScore = sc;
+        GameView2048.setScore(sc);
+    }
+
+    /**
      * An undo function that allows the game to undo a number of times based on the size of stack.
      */
     public void undo() {
         if (!stack.isEmpty()) {
             stack.pop();
+            scoreStack.pop();
             if (!stack.isEmpty()) {
                 gameView2048.updateTiles(stack.peek());
+                updateScores(scoreStack.peek());
             }
             else {
                 if (stack.thelast != null) {
                     gameView2048.updateTiles(stack.thelast);
+                    updateScores(scoreStack.thelast);
                 }
                 else {
                     gameView2048.updateTiles(gameView2048.getTheInitial());
+                    updateScores(0);
                 }
             }
         }
+        gameView2048.saveToFile(SAVE_FILENAME);
+        saveScoreToFile(CURRENT_SCORE);
     }
 
 }

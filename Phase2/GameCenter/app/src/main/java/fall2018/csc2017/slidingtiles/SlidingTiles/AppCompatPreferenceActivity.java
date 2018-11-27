@@ -15,6 +15,9 @@ import android.view.ViewGroup;
  */
 public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
 
+    /**
+     * An App compatDelegate.
+     */
     private AppCompatDelegate mDelegate;
 
     @Override
@@ -85,10 +88,17 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
         getDelegate().onDestroy();
     }
 
+    /**
+     * invalidate the option menu.
+     */
     public void invalidateOptionsMenu() {
         getDelegate().invalidateOptionsMenu();
     }
 
+    /**
+     * get the delegate.
+     * @return appcompatdelegate
+     */
     private AppCompatDelegate getDelegate() {
         if (mDelegate == null) {
             mDelegate = AppCompatDelegate.create(this, null);

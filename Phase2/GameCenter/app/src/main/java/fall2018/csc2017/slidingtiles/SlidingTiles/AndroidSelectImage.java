@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-
+/**
+ * An class for selecting the image.
+ */
 public class AndroidSelectImage extends Activity {
 
     @Override

@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 import fall2018.csc2017.slidingtiles.R;
 
-
 /**
  * A Tile in a sliding tiles puzzle.
  */
@@ -40,6 +39,9 @@ public class Tile implements Comparable<Tile>, Serializable {
         return id;
     }
 
+    /**
+     * A blank Tile.
+     */
     public Tile() { }
 
     /**

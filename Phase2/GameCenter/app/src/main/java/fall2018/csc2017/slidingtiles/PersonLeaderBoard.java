@@ -14,9 +14,16 @@ import org.w3c.dom.Text;
 
 import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
-
+/**
+ * LeaderBaord for the user.
+ */
 public class PersonLeaderBoard extends AppCompatActivity {
+
+    /**
+     * A reference for database.
+     */
     private DatabaseReference mRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +45,6 @@ public class PersonLeaderBoard extends AppCompatActivity {
                 String nickname = dataSnapshot.child(GameLaunchCentreActivity.Email).child("nickname").getValue(String.class);
                 tvmessage.setText("Welcome " + nickname);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

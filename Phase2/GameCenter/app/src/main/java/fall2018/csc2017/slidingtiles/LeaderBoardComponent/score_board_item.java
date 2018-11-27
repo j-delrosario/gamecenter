@@ -1,5 +1,8 @@
 package fall2018.csc2017.slidingtiles.LeaderBoardComponent;
 
+/**
+ * An class for the score board.
+ */
 public class score_board_item {
 
     /**
@@ -20,7 +23,6 @@ public class score_board_item {
     public score_board_item(String gameName, String gameMark) {
         GameName= gameName;
         GameMark = gameMark;
-
     }
 
     /**
@@ -32,14 +34,6 @@ public class score_board_item {
     }
 
     /**
-     * Set the game Name.
-     * @param gameName
-     */
-    public void setGameName(String gameName) {
-        GameName = gameName;
-    }
-
-    /**
      * Return the game mark.
      * @return
      */
@@ -47,11 +41,4 @@ public class score_board_item {
         return GameMark;
     }
 
-    /**
-     * Set the game mark.
-     * @param gameMark
-     */
-    public void setGameMark(String gameMark) {
-        GameMark = gameMark;
-    }
 }

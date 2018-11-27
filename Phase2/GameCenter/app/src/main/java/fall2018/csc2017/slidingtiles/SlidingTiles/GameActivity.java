@@ -97,7 +97,7 @@ public class GameActivity extends AppCompatActivity implements Observer{
     private void autosave(){
         saveToFile(StartingActivity.SAVE_FILENAME);
         saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
-        makeToastText("Game Saved");
+        //makeToastText("Game Saved");
     }
 
     /**

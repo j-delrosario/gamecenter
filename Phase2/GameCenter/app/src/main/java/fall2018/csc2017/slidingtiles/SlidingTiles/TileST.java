@@ -1,7 +1,8 @@
 package fall2018.csc2017.slidingtiles.SlidingTiles;
 
-import fall2018.csc2017.slidingtiles.R;
-
+/**
+ * A tile for sliding tiles.
+ */
 public class TileST extends Tile{
 
     /**

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import fall2018.csc2017.slidingtiles.LeaderBoardActivity;
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * Activity for game matching tiles.
+ */
 public class GameActivityMatch extends AppCompatActivity {
 
     /**
@@ -26,38 +30,22 @@ public class GameActivityMatch extends AppCompatActivity {
      */
     public static final String TEMP_SAVE_FILENAME = "save_match_tmp.ser";
 
-
+    /**
+     * A textView for current score.
+     */
     private static TextView currentScore;
 
-    public static final String gameName = "MatchingTiles";
-
+    /**
+     * Show the current score on screen.
+     */
     public static void showCurrentScore(){
         currentScore.setText(Integer.toString(BoardMatch.getScore()));
     }
-
-    private Handler autosaveTimer = new Handler();
-    private int autosaveInterval = 5000;
-    private boolean saving = true;
-
-    private Runnable autoSave = new Runnable(){
-        @Override
-        public void run() {
-            if (saving) {
-                autosaveTimer.postDelayed(this, autosaveInterval);
-                GameViewMatch v = findViewById(R.id.gameViewMatch);
-                v.save(SAVE_FILENAME);
-                makeToastSavedText();
-            }
-        }
-    };
-
-    public void stopSaving(){saving = false;}
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         updateView();
-        autosaveTimer.postDelayed(autoSave, autosaveInterval);
     }
 
     @Override
@@ -65,14 +53,16 @@ public class GameActivityMatch extends AppCompatActivity {
         super.onPause();
         GameViewMatch v = findViewById(R.id.gameViewMatch);
         v.save(SAVE_FILENAME);
-        autosaveTimer.removeCallbacks(autoSave);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        autosaveTimer.removeCallbacks(autoSave);
-        autosaveTimer.postDelayed(autoSave, autosaveInterval);
+        GameViewMatch matchView = findViewById(R.id.gameViewMatch);
+        if (matchView.load(GameActivityMatch.SAVE_FILENAME)) {
+            matchView.getBoard().refresh();
+            showCurrentScore();
+        }
     }
 
     private void addStartButtonListener() {
@@ -88,6 +78,9 @@ public class GameActivityMatch extends AppCompatActivity {
         });
     }
 
+    /**
+     * A score board listener.
+     */
     private void addScoreBoardButtonListener() {
         Button scoreBoardButton = findViewById(R.id.scoreboard_2048);
         scoreBoardButton.setOnClickListener(new View.OnClickListener() {
@@ -99,25 +92,14 @@ public class GameActivityMatch extends AppCompatActivity {
         });
     }
 
+    /**
+     * update the current views.
+     */
     private void updateView() {
         setContentView(R.layout.match_main);
         currentScore = (TextView) findViewById(R.id.score);
         showCurrentScore();
         addStartButtonListener();
         addScoreBoardButtonListener();
-    }
-
-    private void makeToastSavedText() {
-        Toast toast = Toast.makeText(this, R.string.saved_game, Toast.LENGTH_SHORT);
-        View view = toast.getView();
-
-        view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        TextView textview = (TextView) view.findViewById(android.R.id.message);
-        Typeface font = Typeface.createFromAsset(this.getAssets(),
-                "fonts/Audiowide-Regular.ttf");
-        textview.setTypeface(font);
-        textview.setTextSize(12);
-        textview.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDarkMT));
-        toast.show();
     }
 }

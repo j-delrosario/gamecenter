@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +71,8 @@ abstract class StartingActivity extends AppCompatActivity {
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(loadable) {
+                File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
+                if(testFile.exists()) {
                     loadFromFile(SAVE_FILENAME);
                     boardManager.clearStack();
                     GameActivity.clearTimeScore();
@@ -155,6 +157,10 @@ abstract class StartingActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Make toast based on the input string.
+     * @param msg
+     */
     public void makeToastText(String msg) {
         Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
         View view = toast.getView();

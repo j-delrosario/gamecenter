@@ -2,6 +2,9 @@ package fall2018.csc2017.slidingtiles.SlidingTiles;
 
 import java.util.List;
 
+/**
+ * Board for Sliding Tiles.
+ */
 public class BoardST extends Board {
 
     BoardST(List<Tile> tiles) {
@@ -20,6 +23,7 @@ public class BoardST extends Board {
         Tile temp = tiles[row1][col1];
         tiles[row1][col1] = tiles[row2][col2];
         tiles[row2][col2] = temp;
+
         setChanged();
         notifyObservers();
     }

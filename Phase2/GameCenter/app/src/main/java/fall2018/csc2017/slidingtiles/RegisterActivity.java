@@ -26,13 +26,27 @@ public class RegisterActivity extends AppCompatActivity {
      * EditTexts for Email, Password, Nickname.
      */
     private EditText Email;
+
+    /**
+     * An text for password.
+     */
     private EditText Password;
+
+    /**
+     * An text for Nickname.
+     */
     private EditText Nickname;
+
+    /**
+     * A reference for the batabase.
+     */
     private DatabaseReference mRef;
+
     /**
      * A button represents Register.
      */
     private Button Register;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,15 +56,9 @@ public class RegisterActivity extends AppCompatActivity {
         Nickname = findViewById(R.id.NickNameRegister);
         Register = findViewById(R.id.regbutton);
         mRef = FirebaseDatabase.getInstance().getReference(Email.getText().toString());
-
-
-
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
                 if (Email.getText().toString().replaceAll("\\s", "").equals("") ||
                         Password.getText().toString().replaceAll("\\s", "").equals("") ||
                         Nickname.getText().toString().replaceAll("\\s", "").equals("")) {
@@ -58,13 +66,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }else{
                     Read();
                 }
-
-
             }
         });
 
     }
 
+    /**
+     * Write user info.
+     */
     private void Write() {
         User user = new User(Email.getText().toString(), Password.getText().toString(), Nickname.getText().toString(), 0, 0, 0);
         mRef.child(Email.getText().toString()).setValue(user);
@@ -73,6 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
         GameLaunchCentreActivity.Email = Email.getText().toString();
     }
 
+    /**
+     * Read the user info.
+     */
     private void Read(){
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,15 +95,11 @@ public class RegisterActivity extends AppCompatActivity {
                 }else{
                     Write();
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
     }
 
 }
