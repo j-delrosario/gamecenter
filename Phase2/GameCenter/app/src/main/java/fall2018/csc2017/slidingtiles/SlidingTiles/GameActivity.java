@@ -42,7 +42,7 @@ public class GameActivity extends AppCompatActivity implements Observer{
     /**
      * The board manager.
      */
-    private BoardManager boardManager;
+    private BoardManagerST boardManager;
 
     /**
      * The buttons to display.
@@ -158,9 +158,8 @@ public class GameActivity extends AppCompatActivity implements Observer{
      * Update the stack in boardManager based on current board.
      */
     public void updateBoard() {
-
-        Board b = new Board(boardManager.getBoard().getTiles());
-        BoardManager.managerStack.push(b);
+        BoardST b = new BoardST(boardManager.getBoard().getTiles());
+        BoardManagerST.managerStack.push(b);
     }
 
     @Override
@@ -292,7 +291,7 @@ public class GameActivity extends AppCompatActivity implements Observer{
             InputStream inputStream = this.openFileInput(fileName);
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
-                boardManager = (BoardManager) input.readObject();
+                boardManager = (BoardManagerST) input.readObject();
                 inputStream.close();
             }
         } catch (FileNotFoundException e) {

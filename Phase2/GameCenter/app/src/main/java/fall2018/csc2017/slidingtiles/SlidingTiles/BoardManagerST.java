@@ -1,19 +1,116 @@
 package fall2018.csc2017.slidingtiles.SlidingTiles;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BoardManagerST extends BoardManager {
+public class BoardManagerST implements Serializable {
+
+    /**
+     * Manage a board that has been pre-populated.
+     * @param board the board
+
+    BoardManagerST(BoardST board) {
+    super(board);
+    }
+     */
+
+    /**
+     * The board being managed.
+     */
+    protected BoardST board;
+
+    /**
+     * An int represent the number of row of current board.
+     */
+    public int intRow;
+
+    /**
+     * The initial state of the Board in BoardManager
+     */
+    public static BoardST initial_1;
+
+    /**
+     * The number of Undo allowed.
+     */
+    public static int numUndo = 3;
+
+    /**
+     * The stack contains numUndo number of game States
+     */
+    public static BoardStack managerStack = new BoardStack(numUndo);
 
     /**
      * Manage a board that has been pre-populated.
      * @param board the board
      */
-    BoardManagerST(Board board) {
-        super(board);
+    BoardManagerST(BoardST board) {
+        this.board = board;
+        intRow = getRow();
     }
+
+    /**
+     * Clear managerStack.
+     */
+    public void clearStack(){
+        managerStack = new BoardStack(numUndo);
+    }
+
+    /**
+     * Return the current board.
+     */
+    BoardST getBoard() {
+        return board;
+    }
+
+    /**
+     * Return the Row number of the board.
+     * @return int
+     */
+    public int getRow(){
+        return board.NUM_ROWS;
+    }
+
+    /**
+     * Get the number of the row from the boardManager.
+     * @return
+     */
+    public int getNumRow(){
+        return intRow;
+    }
+
+    /**
+     * Return True if numUndo is changed.
+     * @param num
+     * @return changUndo
+     */
+    public static boolean updateUndo(int num){
+        boolean changeUndo = false;
+        if (num != numUndo) {
+            numUndo = num;
+            changeUndo = true;
+        }
+        return changeUndo;
+    }
+
+    /**
+     * an boolean defines if the tap is valid.
+     * @param position
+     * @return
+
+    abstract boolean isValidTap(int position);
+     */
+
+    /**
+     * Process a touch at position in the board, swapping tiles as appropriate.
+     *
+     * @param position the position
+
+    abstract boolean touchMove(int position);
+
+     */
 
     /**
      * Manage a new shuffled board.
@@ -113,11 +210,13 @@ public class BoardManagerST extends BoardManager {
         int col = position % Board.NUM_COLS;
         List<Integer> coord = findBlankCoord();
         boolean isSuccessfulMove = false;
+        BoardST stBoard = (BoardST)board;
         int blank_row = coord.get(0), blank_col = coord.get(1);
         if ((row == blank_row && Math.abs(col - blank_col) == 1) || (col == blank_col) && (Math.abs(row - blank_row) == 1)) {
-            ((BoardST)board).swapTiles(row, col, blank_row, blank_col);
+            (stBoard).swapTiles(row, col, blank_row, blank_col);
             isSuccessfulMove = true;
         }
+        board = stBoard;
         return isSuccessfulMove;
     }
 

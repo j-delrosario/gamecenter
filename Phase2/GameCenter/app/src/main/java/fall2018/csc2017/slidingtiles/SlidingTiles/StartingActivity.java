@@ -40,7 +40,7 @@ abstract class StartingActivity extends AppCompatActivity {
     /**
      * The board manager.
      */
-    protected BoardManager boardManager;
+    protected BoardManagerST boardManager;
 
     /**
      * The gameName string.
@@ -129,7 +129,7 @@ abstract class StartingActivity extends AppCompatActivity {
             InputStream inputStream = this.openFileInput(fileName);
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
-                boardManager = (BoardManager) input.readObject();
+                boardManager = (BoardManagerST) input.readObject();
                 inputStream.close();
             }
         } catch (FileNotFoundException e) {

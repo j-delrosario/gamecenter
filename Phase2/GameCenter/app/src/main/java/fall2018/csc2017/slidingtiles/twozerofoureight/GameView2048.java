@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -225,19 +226,27 @@ public class GameView2048 extends GridLayout{
                                 leftSwipe();
                                 if (isOver()){
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameOverListener();
                                 }else if (isWon()){
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameWonListener();
                                 }
                             } else if (x2 > 3) {
                                 rightSwipe();
                                 if (isOver()){
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameOverListener();
                                 }
                                 else if (isWon()){
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameWonListener();
                                 }
                             }
@@ -246,20 +255,28 @@ public class GameView2048 extends GridLayout{
                                 upSwipe();
                                 if (isOver()) {
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameOverListener();
                                 }
                                 else if (isWon()){
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameWonListener();
                                 }
                             } else if (y2 > 3) {
                                 downSwipe();
                                 if (isOver()) {
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameOverListener();
                                 }
                                 else if (isWon()){
                                     ReadWriteMark();
+                                    GameActivity2048.setUnLoadable();
+                                    clearCurrentScore();
                                     gameWonListener();
                                 }
                             }
@@ -672,7 +689,8 @@ public class GameView2048 extends GridLayout{
      * the user restart the game.
      */
     private void gameOverListener(){
-
+        //File testFile = new File(getContext().getFilesDir(), GameActivity2048.SAVE_FILENAME);
+        //testFile.delete();
         new AlertDialog.Builder(getContext()).setTitle(("Sorry")).setMessage("Game Over").setPositiveButton("Restart", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface d, int i ){
@@ -687,6 +705,8 @@ public class GameView2048 extends GridLayout{
      * the user restart the game.
      */
     private void gameWonListener(){
+       // File testFile = new File(getContext().getFilesDir(), GameActivity2048.SAVE_FILENAME);
+        //testFile.delete();
         new AlertDialog.Builder(getContext()).setTitle(("Congratulations")).setMessage("You Won. Your Score is" + score).setPositiveButton("Restart", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface d, int i ){

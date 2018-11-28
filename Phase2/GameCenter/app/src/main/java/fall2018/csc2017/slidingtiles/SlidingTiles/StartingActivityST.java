@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import fall2018.csc2017.slidingtiles.R;
+import fall2018.csc2017.slidingtiles.twozerofoureight.GameActivity2048;
 
 /**
  * Starting Activity for Sliding Tiles.
@@ -64,10 +65,10 @@ public class StartingActivityST extends StartingActivity implements Runnable{
         String undo = prefs.getString("undo_list", "");
         boolean use_default_image = prefs.getBoolean("use_default_image", true);
         if (!size.equals("")) {
-            Board.updateSize(Integer.parseInt(size));
+            boardManager.getBoard().updateSize(Integer.parseInt(size));
         }
         if (!undo.equals("")) {
-            BoardManager.updateUndo(Integer.parseInt(undo));
+            BoardManagerST.updateUndo(Integer.parseInt(undo));
         }
         if (GameActivity.hasBackground() && !use_default_image) {
             int[] image_dimensions = GameActivity.getBackgroundDimensions();
@@ -103,7 +104,7 @@ public class StartingActivityST extends StartingActivity implements Runnable{
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
+                File testFile = new File(getApplicationContext().getFilesDir(), GameActivity2048.SAVE_FILENAME);
                 if(testFile.exists()) {
                     updateGameSettings();
                     loadFromFile(SAVE_FILENAME);
@@ -161,6 +162,12 @@ public class StartingActivityST extends StartingActivity implements Runnable{
         undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateGameSettings();
+                if (!boardManager.managerStack.isEmpty()) {
+                    if (boardManager.managerStack.getNumRowInStack() != SizeRow) {
+                        boardManager.clearStack();
+                    }
+                }
                 if (!boardManager.managerStack.isEmpty()) {
                     undo();
                     switchToGame();

@@ -15,7 +15,7 @@ abstract class MovementController {
     /**
      * Board manager of Sliding tiles.
      */
-    protected BoardManager boardManager = null;
+    protected BoardManagerST boardManager = null;
 
     /**
      * Check if the game is won.
@@ -27,7 +27,7 @@ abstract class MovementController {
      * Set the board manager.
      * @param boardManager
      */
-    public void setBoardManager(BoardManager boardManager) {
+    public void setBoardManager(BoardManagerST boardManager) {
         this.boardManager = boardManager;
     }
 

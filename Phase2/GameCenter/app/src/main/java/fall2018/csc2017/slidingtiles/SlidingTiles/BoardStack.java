@@ -15,7 +15,7 @@ public class BoardStack {
     /**
      * The stack in the form of an array.
      */
-    public Board[] stackList;
+    public BoardST[] stackList;
 
     /**
      * The top index used to monitor the top object in stack.
@@ -23,9 +23,14 @@ public class BoardStack {
     private int topIndex;
 
     /**
+     * An int represents the number of rows for the boards in stack.
+     */
+    private int numRowInStack = 4;
+
+    /**
      * The last board if there are more moves than maximum undo number taken.
      */
-    public Board thelast;
+    public BoardST thelast;
 
 
     /**
@@ -34,7 +39,7 @@ public class BoardStack {
      */
     public BoardStack(int size) {
         maxSize = size;
-        stackList = new Board[size+1];
+        stackList = new BoardST[size+1];
         topIndex = -1;
     }
 
@@ -42,7 +47,7 @@ public class BoardStack {
      * A push function that pushes Boards into the Stack.
      * @param b
      */
-    public void push(Board b) {
+    public void push(BoardST b) {
         if (! isFull()){
             stackList[++topIndex] = b;
         }
@@ -55,13 +60,15 @@ public class BoardStack {
             }
             stackList[topIndex] = b;
         }
+        int bufferInt = new Integer(b.NUM_ROWS);
+        numRowInStack = bufferInt;
     }
 
     /**
      * Returns the top object of the stack and pop it out.
      * @return a board
      */
-    public Board pop() {
+    public BoardST pop() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
@@ -69,10 +76,17 @@ public class BoardStack {
     }
 
     /**
+     * Return the number of rows of boards in stack.
+     */
+    public int getNumRowInStack(){
+        return numRowInStack;
+    }
+
+    /**
      * Returns the top object and leave it inside.
      * @return a board
      */
-    public Board peek() {
+    public BoardST peek() {
         return stackList[topIndex];
     }
 
@@ -84,7 +98,6 @@ public class BoardStack {
         return (topIndex == -1);
 
     }
-
     /**
      * Returns true if the stack has Maxsize number of objects.
      * @return bool

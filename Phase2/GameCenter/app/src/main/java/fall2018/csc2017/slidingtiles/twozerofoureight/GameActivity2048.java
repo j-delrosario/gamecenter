@@ -142,7 +142,6 @@ public class GameActivity2048 extends AppCompatActivity {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
                 int score = (int) input.readObject();
                 gameScore = score;
-                Toast.makeText(this, String.valueOf(gameScore), Toast.LENGTH_SHORT).show();
             }
         } catch (FileNotFoundException e) {
             //Log.e("login activity", "File not found: " + e.toString());
@@ -210,7 +209,7 @@ public class GameActivity2048 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
-                if(testFile.exists()) {
+                if(testFile.exists() && loadable) {
                     gameView2048.loadFromFile(SAVE_FILENAME);
                     clearStack();
                     makeToastLoadedText();
@@ -220,6 +219,13 @@ public class GameActivity2048 extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Set the bool to Unloadable.
+     */
+    public static void setUnLoadable(){
+        loadable = false;
     }
 
     /**
