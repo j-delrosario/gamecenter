@@ -225,7 +225,7 @@ public class GameActivity extends AppCompatActivity implements Observer{
         } else {
             button.setText(Integer.toString(tile.getId()));
         }
-        button.setTextSize(70);
+        button.setTextSize(40);
         Typeface font = Typeface.createFromAsset(this.getAssets(),
                 "fonts/Audiowide-Regular.ttf");
         button.setTypeface(font);

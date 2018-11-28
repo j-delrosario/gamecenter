@@ -75,7 +75,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
     public void createUser(View view){
         String email = Email.getText().toString();
         String password = Password.getText().toString();
@@ -91,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Intent intent = new Intent (getApplicationContext(), GameLaunchCentreActivity.class);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(getApplicationContext(), "Fail to register", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Fail to register. Either Email has been registered or register conditions are violated.", Toast.LENGTH_LONG).show();
                 }
             }
         });
