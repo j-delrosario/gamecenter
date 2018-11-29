@@ -7,11 +7,11 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
 
 /**
  * Gestrue detecter for Sliding tiles.
@@ -66,12 +66,13 @@ public class GestureDetectGridViewST extends GestureDetectGridView {
                 }
                 if (mController.hasWon()) {
                     final double score = GameActivity.getScore();
+                    final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Integer value = dataSnapshot.child("mmsliding").getValue(Integer.class);
+                            Integer value = dataSnapshot.child(currentUid).child("mmsliding").getValue(Integer.class);
                             if (value < score){
-                                mRef.child("mmsliding").setValue(score);
+                                mRef.child(currentUid).child("mmsliding").setValue(score);
                             }
                         }
                         @Override
