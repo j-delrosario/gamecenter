@@ -20,7 +20,6 @@ public class MovementControllerST extends MovementController {
         if (boardManager.isValidTap(position)) {
             boardManager.touchMove(position);
             if (((BoardManagerST)boardManager).puzzleSolved()) {
-                Toast.makeText(context, "YOU WIN!", Toast.LENGTH_SHORT).show();
                 hasWon = true;
             }
         } else {
