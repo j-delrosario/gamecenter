@@ -68,7 +68,7 @@ public class TileST implements Comparable<TileST>, Serializable {
      * @param width the width of the tile, to cut this tile's image (from a background image)
      * @param height the height of the tile, to cut this tile's image (from a background image)
      */
-    TileST(int id, int x, int y, int width, int height) {
+    public TileST(int id, int x, int y, int width, int height) {
         this.id = id;
         this.backgroundCoordinates[0] = x;
         this.backgroundCoordinates[1] = y;
@@ -81,7 +81,7 @@ public class TileST implements Comparable<TileST>, Serializable {
      *
      * @param backgroundId
      */
-    TileST(int backgroundId) {
+    public TileST(int backgroundId) {
         id = backgroundId + 1;
         visibleBackground = id;
     }

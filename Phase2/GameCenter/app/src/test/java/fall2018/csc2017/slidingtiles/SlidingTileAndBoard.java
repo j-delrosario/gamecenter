@@ -9,7 +9,6 @@ import fall2018.csc2017.slidingtiles.SlidingTiles.BoardManagerST;
 import fall2018.csc2017.slidingtiles.SlidingTiles.BoardST;
 import static org.junit.Assert.*;
 
-import fall2018.csc2017.slidingtiles.SlidingTiles.Tile;
 import fall2018.csc2017.slidingtiles.SlidingTiles.TileST;
 
 /**
@@ -17,7 +16,7 @@ import fall2018.csc2017.slidingtiles.SlidingTiles.TileST;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class SlidingTilesandBoardTest {
+public class SlidingTileAndBoard {
 
     /**
      * The board manager for testing.
@@ -29,8 +28,8 @@ public class SlidingTilesandBoardTest {
      *
      * @return a List<Tile>
      */
-    public List<Tile> addTiles(List<Integer> ids) {
-        List<Tile> a = new ArrayList<>();
+    public List<TileST> addTiles(List<Integer> ids) {
+        List<TileST> a = new ArrayList<>();
         for (Integer i : ids) {
             a.add(new TileST(i));
         }
@@ -43,8 +42,8 @@ public class SlidingTilesandBoardTest {
      *
      * @return a set of tiles that are in order
      */
-    private List<Tile> makeTilesST() {
-        List<Tile> tiles = new ArrayList<>();
+    private List<TileST> makeTilesST() {
+        List<TileST> tiles = new ArrayList<>();
         final int numTiles = 16;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
             tiles.add(new TileST(tileNum));
@@ -57,7 +56,7 @@ public class SlidingTilesandBoardTest {
      * Make a solved ST Board.
      */
     private void setUpCorrect() {
-        List<Tile> tilesST = makeTilesST();
+        List<TileST> tilesST = makeTilesST();
         BoardST board = new BoardST(tilesST);
         this.boardManager = new BoardManagerST(board);
     }
@@ -155,7 +154,7 @@ public class SlidingTilesandBoardTest {
     @Test
     public void testCreation() {
         List<Integer> i = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24);
-        List<Tile> tiles = addTiles(i);
+        List<TileST> tiles = addTiles(i);
         for (int j = 0; j < i.size(); j++) {
             assertEquals(j, tiles.get(j).getId() - 1);
 
@@ -170,8 +169,8 @@ public class SlidingTilesandBoardTest {
     public void testCompareTo() {
         List<Integer> i = Arrays.asList(0, 1);
         List<Integer> m = Arrays.asList(0, 0);
-        List<Tile> different = addTiles(i);
-        List<Tile> same = addTiles(m);
+        List<TileST> different = addTiles(i);
+        List<TileST> same = addTiles(m);
         assertEquals(1, different.get(0).compareTo(different.get(1)));
         assertEquals(0, same.get(0).compareTo(same.get(1)));
     }
@@ -183,9 +182,9 @@ public class SlidingTilesandBoardTest {
     @Test
     public void checkInversion() {
         setUpCorrect();
-        List<Tile> checkOne = addTiles(Arrays.asList(9, 8));
-        List<Tile> checkZero = addTiles(Arrays.asList(8, 9));
-        List<Tile> checkTwo = addTiles(Arrays.asList(9, 8, 7));
+        List<TileST> checkOne = addTiles(Arrays.asList(9, 8));
+        List<TileST> checkZero = addTiles(Arrays.asList(8, 9));
+        List<TileST> checkTwo = addTiles(Arrays.asList(9, 8, 7));
         assertEquals(1, boardManager.checkInversion(checkOne));
         assertEquals(0, boardManager.checkInversion(checkZero));
         assertEquals(2, boardManager.checkInversion(checkTwo));
@@ -197,8 +196,8 @@ public class SlidingTilesandBoardTest {
      */
     @Test
     public void checkInversions() {
-        List<Tile> checkOne = addTiles(Arrays.asList(9, 8, 10));
-        List<Tile> checkThree = addTiles(Arrays.asList(9, 8, 7));
+        List<TileST> checkOne = addTiles(Arrays.asList(9, 8, 10));
+        List<TileST> checkThree = addTiles(Arrays.asList(9, 8, 7));
         setUpCorrect();
         assertEquals(1, boardManager.checkTotalInversions(checkOne));
         assertEquals(3, boardManager.checkTotalInversions(checkThree));
@@ -212,7 +211,7 @@ public class SlidingTilesandBoardTest {
     public void isSolvable() {
         setUpCorrect();
         assertEquals(true, boardManager.isSolvable(boardManager.getBoard().getTiles(), 4));
-        List<Tile> notSolvable = addTiles(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 8, 7));
+        List<TileST> notSolvable = addTiles(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 8, 7));
         assertFalse(boardManager.isSolvable(notSolvable, 3));
 
     }

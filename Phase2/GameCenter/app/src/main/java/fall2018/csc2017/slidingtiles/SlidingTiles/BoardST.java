@@ -55,7 +55,7 @@ public class BoardST extends Observable implements Serializable, Iterable<TileST
      *
      * @param tiles the tiles for the board
      */
-    BoardST(List<TileST> tiles) {
+    public BoardST(List<TileST> tiles) {
         Iterator<TileST> iter = tiles.iterator();
 
         for (int row = 0; row != NUM_ROWS; row++) {
@@ -107,7 +107,7 @@ public class BoardST extends Observable implements Serializable, Iterable<TileST
      * @param col the tile column
      * @return the tile at (row, col)
      */
-    TileST getTile(int row, int col) {
+    public TileST getTile(int row, int col) {
         return tiles[row][col];
     }
 
@@ -140,7 +140,7 @@ public class BoardST extends Observable implements Serializable, Iterable<TileST
      * @param row2 the second tile row
      * @param col2 the second tile col
      */
-    void swapTiles(int row1, int col1, int row2, int col2) {
+    public void swapTiles(int row1, int col1, int row2, int col2) {
         TileST temp = tiles[row1][col1];
         tiles[row1][col1] = tiles[row2][col2];
         tiles[row2][col2] = temp;

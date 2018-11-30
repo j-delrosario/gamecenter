@@ -69,8 +69,8 @@ public class BoardStackTest {
      *
      * @return a list of tiles given a list of integer ids
      */
-    public List<Tile> addTiles(List<Integer> ids) {
-        List<Tile> a = new ArrayList<>();
+    public List<TileST> addTiles(List<Integer> ids) {
+        List<TileST> a = new ArrayList<>();
         for (Integer i : ids) {
             a.add(new TileST(i));
         }
