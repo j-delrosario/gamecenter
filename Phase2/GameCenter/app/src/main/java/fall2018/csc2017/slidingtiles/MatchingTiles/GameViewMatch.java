@@ -335,7 +335,7 @@ public class GameViewMatch extends GridLayout {
                         endAnimationHandler.removeCallbacks(this);
                         Activity a = (Activity)getContext();
                         View v = ((GameActivityMatch)a).findViewById(R.id.gameViewMatch);
-                        if (((GameViewMatch)v).getBoard().isComplete()) {
+                        if (((GameViewMatch)v).getBoard().isComplete() && !((GameViewMatch)v).getBoard().getAnimationCancel()){
                             makeToastCorrectnessText();
                         }
                     }

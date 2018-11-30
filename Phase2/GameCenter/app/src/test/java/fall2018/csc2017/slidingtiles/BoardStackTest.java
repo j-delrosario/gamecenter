@@ -122,7 +122,7 @@ public class BoardStackTest {
         assertTrue(boardStack.isEmpty());
         boardStack.push(bottomBoard);
         boardStack.pop();
-        assertTrue(boardStack.isEmpty());g
+        assertTrue(boardStack.isEmpty());
     }
 
 

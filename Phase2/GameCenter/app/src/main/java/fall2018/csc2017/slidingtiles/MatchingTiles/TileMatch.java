@@ -89,6 +89,14 @@ public class TileMatch extends FrameLayout implements Serializable {
     }
 
     /**
+     * Returns the TextView of the tile.
+     * @return TextView
+     */
+    public TextView getID() {
+        return id;
+    }
+
+    /**
      * Returns if the tile number is visible.
      * @return
      */

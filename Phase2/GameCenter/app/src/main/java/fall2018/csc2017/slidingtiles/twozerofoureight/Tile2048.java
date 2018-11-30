@@ -186,6 +186,14 @@ public class Tile2048 extends FrameLayout {
     }
 
     /**
+     * Returns the TextView of the tile.
+     * @return TextView
+     */
+    public TextView getID() {
+        return id;
+    }
+
+    /**
      * Set the background number of a tile.
      * @param newBackground
      */

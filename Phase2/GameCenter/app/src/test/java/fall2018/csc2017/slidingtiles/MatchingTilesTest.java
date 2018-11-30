@@ -19,16 +19,20 @@ public class MatchingTilesTest {
     BoardMatch boardMatch;
     public void setUpCorrect() {
         boardMatch = new BoardMatch();
-
-
     }
 
+    /**
+     * Test if a BoardMatch properly holds and updates its score
+     */
     @Test
     public void testGetScore() {
         setUpCorrect();
         assertEquals(100, boardMatch.getScore());
     }
 
+    /**
+     * Test setting BoardMatch's current score
+     */
     @Test
     public void testSetScore() {
         setUpCorrect();
@@ -36,6 +40,9 @@ public class MatchingTilesTest {
         assertEquals(200, boardMatch.getScore());
     }
 
+    /**
+     * Test resetting a BoardMatch's current score
+     */
     @Test
     public void testResetScore() {
         setUpCorrect();
@@ -44,6 +51,9 @@ public class MatchingTilesTest {
         assertEquals(100, boardMatch.getScore());
     }
 
+    /**
+     * Test updating the move count of a BoardMatch
+     */
     @Test
     public void moveCount() {
         setUpCorrect();

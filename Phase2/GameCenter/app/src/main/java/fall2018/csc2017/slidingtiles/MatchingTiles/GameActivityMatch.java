@@ -68,6 +68,7 @@ public class GameActivityMatch extends AppCompatActivity {
         super.onPause();
         GameViewMatch v = findViewById(R.id.gameViewMatch);
         v.save(SAVE_FILENAME);
+        v.getBoard().setAnimationCancel(true);
     }
 
     @Override

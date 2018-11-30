@@ -60,6 +60,11 @@ public class BoardMatch extends Observable implements Serializable {
     private int completedMatches = 0;
 
     /**
+     * A boolean of whether the ending animation should be cancelled or not.
+     */
+    private boolean animationCancel = false;
+
+    /**
      * An array keep the selected Tiles.
      */
     private ArrayList<TileMatch> selectedTiles = new ArrayList<>();
@@ -104,6 +109,18 @@ public class BoardMatch extends Observable implements Serializable {
      * @param completedMatches
      */
     public void setCompletedMatches(int completedMatches) {this.completedMatches = completedMatches;}
+
+    /**
+     * Return whether the animation should be cancelled or not
+     * @return boolean
+     */
+    public boolean getAnimationCancel(){return animationCancel;}
+
+    /**
+     * Set whether the animation should be cancelled or not
+     * @param bool
+     */
+    public void setAnimationCancel(boolean bool){animationCancel = bool;}
 
     /**
      * Add an move number.
