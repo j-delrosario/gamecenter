@@ -95,8 +95,8 @@ public class GameActivity extends AppCompatActivity implements Observer{
      * autosave the current state.
      */
     private void autosave(){
-        saveToFile(StartingActivity.SAVE_FILENAME);
-        saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
+        saveToFile(StartingActivityST.SAVE_FILENAME);
+        saveToFile(StartingActivityST.TEMP_SAVE_FILENAME);
         //makeToastText("Game Saved");
     }
 
@@ -112,7 +112,7 @@ public class GameActivity extends AppCompatActivity implements Observer{
     };
 
     // Grid View and calculated column height and width based on device size
-    private GestureDetectGridView gridView;
+    private GestureDetectGridViewST gridView;
 
     /**
      * column width and height int.
@@ -166,13 +166,13 @@ public class GameActivity extends AppCompatActivity implements Observer{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadFromFile(StartingActivity.TEMP_SAVE_FILENAME);
+        loadFromFile(StartingActivityST.TEMP_SAVE_FILENAME);
         createTileButtons(this);
         // Add View to activity
         setContentView(R.layout.activity_main_st);
         gridView = findViewById(R.id.grid);
 
-        gridView.setNumColumns(Board.NUM_COLS);
+        gridView.setNumColumns(BoardST.NUM_COLS);
         gridView.setBoardManager(boardManager);
         boardManager.getBoard().addObserver(this);
         // Observer sets up desired dimensions as well as calls our display function
@@ -185,12 +185,12 @@ public class GameActivity extends AppCompatActivity implements Observer{
                         int displayWidth = gridView.getMeasuredWidth();
                         int displayHeight = gridView.getMeasuredHeight();
 
-                        columnWidth = displayWidth / Board.NUM_COLS;
-                        columnHeight = displayHeight / Board.NUM_ROWS;
+                        columnWidth = displayWidth / BoardST.NUM_COLS;
+                        columnHeight = displayHeight / BoardST.NUM_ROWS;
 
                         display();
                         timingScore.postDelayed(timing, 5000);
-                        StartingActivity.setBool();
+                        StartingActivityST.setBool();
                     }
                 });
     }
@@ -201,12 +201,12 @@ public class GameActivity extends AppCompatActivity implements Observer{
      * @param context the context
      */
     private void createTileButtons(Context context) {
-        Board board = boardManager.getBoard();
+        BoardST board = boardManager.getBoard();
         Drawable d;
         tileButtons = new ArrayList<>();
 
-        for (int row = 0; row != Board.NUM_ROWS; row++) {
-            for (int col = 0; col != Board.NUM_COLS; col++) {
+        for (int row = 0; row != BoardST.NUM_ROWS; row++) {
+            for (int col = 0; col != BoardST.NUM_COLS; col++) {
                 Button tmp = new Button(context);
                 if (board.getTile(row, col).getBackground() == 0) {
                     d = createDrawableBackground(board, row, col);
@@ -219,8 +219,8 @@ public class GameActivity extends AppCompatActivity implements Observer{
         }
     }
 
-    private void updateTileButton(Button button, Tile tile) {
-        if (tile.getId() == Board.NUM_COLS * Board.NUM_ROWS) {
+    private void updateTileButton(Button button, TileST tile) {
+        if (tile.getId() == BoardST.NUM_COLS * BoardST.NUM_ROWS) {
             button.setText("");
         } else {
             button.setText(Integer.toString(tile.getId()));
@@ -246,13 +246,13 @@ public class GameActivity extends AppCompatActivity implements Observer{
      * Update the backgrounds on the buttons to match the tiles.
      */
     private void updateTileButtons() {
-        Board board = boardManager.getBoard();
+        BoardST board = boardManager.getBoard();
         int nextPos = 0;
         Drawable d;
 
         for (Button b : tileButtons) {
-            int row = nextPos / Board.NUM_ROWS;
-            int col = nextPos % Board.NUM_COLS;
+            int row = nextPos / BoardST.NUM_ROWS;
+            int col = nextPos % BoardST.NUM_COLS;
             if (board.getTile(row, col).getBackground() == 0) {
                 d = createDrawableBackground(board, row, col);
                 b.setBackground(d);
@@ -261,10 +261,11 @@ public class GameActivity extends AppCompatActivity implements Observer{
             nextPos++;
         }
     }
+
     /**
      * Return a Drawable version of a region of the background image's bitmap.
      */
-    private Drawable createDrawableBackground(Board board, int row, int col) {
+    private Drawable createDrawableBackground(BoardST board, int row, int col) {
         int[] coordinates = ((TileST)board.getTile(row, col)).getBackgroundCoordinates();
         Bitmap bitmap = Bitmap.createBitmap(background, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
         return new BitmapDrawable(Resources.getSystem(), bitmap);
@@ -277,8 +278,8 @@ public class GameActivity extends AppCompatActivity implements Observer{
     @Override
     protected void onPause() {
         super.onPause();
-        saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
-        saveToFile(StartingActivity.SAVE_FILENAME);
+        saveToFile(StartingActivityST.TEMP_SAVE_FILENAME);
+        saveToFile(StartingActivityST.SAVE_FILENAME);
     }
 
     /**

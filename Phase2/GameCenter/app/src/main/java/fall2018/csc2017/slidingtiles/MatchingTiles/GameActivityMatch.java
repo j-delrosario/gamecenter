@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import fall2018.csc2017.slidingtiles.LeaderBoardActivity;
 import fall2018.csc2017.slidingtiles.R;
 
@@ -22,13 +24,18 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivityMatch extends AppCompatActivity {
 
     /**
+     * Current user's email
+     */
+    public static String emailFileName = "";
+
+    /**
      * The main save file.
      */
-    public static final String SAVE_FILENAME = "save_match.ser";
+    public static String SAVE_FILENAME = "save_match.ser";
     /**
      * A temporary save file.
      */
-    public static final String TEMP_SAVE_FILENAME = "save_match_tmp.ser";
+    public static String TEMP_SAVE_FILENAME = "save_match_tmp.ser";
 
     /**
      * A textView for current score.
@@ -40,6 +47,14 @@ public class GameActivityMatch extends AppCompatActivity {
      */
     public static void showCurrentScore(){
         currentScore.setText(Integer.toString(BoardMatch.getScore()));
+    }
+
+    /**
+     * Update the file names
+     */
+    public void updateFileNames(String name){
+        SAVE_FILENAME =  emailFileName + "_MT.ser";
+        TEMP_SAVE_FILENAME = emailFileName + "_MT_tmp.ser";
     }
 
     @Override
@@ -65,6 +80,9 @@ public class GameActivityMatch extends AppCompatActivity {
         }
     }
 
+    /**
+     * A start button listener.
+     */
     private void addStartButtonListener() {
         Button newGameButton = findViewById(R.id.new_game);
         newGameButton.setOnClickListener(new View.OnClickListener() {
@@ -101,5 +119,10 @@ public class GameActivityMatch extends AppCompatActivity {
         showCurrentScore();
         addStartButtonListener();
         addScoreBoardButtonListener();
+        final String currentEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        currentEmail.replace("@", "_");
+        currentEmail.replace(".", "_");
+        emailFileName = currentEmail;
+        updateFileNames(emailFileName);
     }
 }

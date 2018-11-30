@@ -23,17 +23,17 @@ public class User {
     /**
      * Score for Sliding Tiles.
      */
-    private Integer MMSliding;
+    private Integer MMSliding = 0;
 
     /**
      * Score represent matchingTiles.
      */
-    private Integer MMMatching;
+    private Integer MMMatching = 0;
 
     /**
      * Score for 2048.
      */
-    private Integer MM2048;
+    private Integer MM2048 = 0;
 
     /**
      * Initialization

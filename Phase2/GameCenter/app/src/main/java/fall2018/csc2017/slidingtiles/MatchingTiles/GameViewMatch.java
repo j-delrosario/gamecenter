@@ -139,6 +139,9 @@ public class GameViewMatch extends GridLayout {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             Integer value = dataSnapshot.child(currentUid).child("mmmatching").getValue(Integer.class);
+                            if (value == null){
+                                value = 0;
+                            }
                             if (value < BoardMatch.getScore()){
                                 mRef.child(currentUid).child("mmmatching").setValue(BoardMatch.getScore());
                             }

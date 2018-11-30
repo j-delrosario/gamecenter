@@ -6,20 +6,61 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.GridView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import fall2018.csc2017.slidingtiles.GameCentre.GameLaunchCentreActivity;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Gestrue detecter for Sliding tiles.
  */
-public class GestureDetectGridViewST extends GestureDetectGridView {
+public class GestureDetectGridViewST extends GridView {
 
     /**
-     * Initialization.
+     * A default swipe minimum distance.
+     */
+    public static final int SWIPE_MIN_DISTANCE = 100;
+
+    /**
+     * gestureDetecter
+     */
+    protected GestureDetector gDetector;
+
+    /**
+     * The movement controller
+     */
+    protected MovementControllerST mController;
+
+    /**
+     * A boolean represents if the filing is confirmed.
+     */
+    private boolean mFlingConfirmed = false;
+
+    /**
+     * The x location
+     */
+    private float mTouchX;
+
+    /**
+     * The y location
+     */
+    private float mTouchY;
+
+    /**
+     * the Database reference.
+     */
+    public DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+
+    /**
+     * Initialization
      * @param context
      */
     public GestureDetectGridViewST(Context context) {
@@ -28,18 +69,17 @@ public class GestureDetectGridViewST extends GestureDetectGridView {
     }
 
     /**
-     * Initialization.
+     * Initialization
      * @param context
      * @param attrs
      */
-
     public GestureDetectGridViewST(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
     /**
-     * Initialization.
+     * Initialization
      * @param context
      * @param attrs
      * @param defStyleAttr
@@ -47,6 +87,44 @@ public class GestureDetectGridViewST extends GestureDetectGridView {
     public GestureDetectGridViewST(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        int action = ev.getActionMasked();
+        gDetector.onTouchEvent(ev);
+
+        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
+            mFlingConfirmed = false;
+        } else if (action == MotionEvent.ACTION_DOWN) {
+            mTouchX = ev.getX();
+            mTouchY = ev.getY();
+        } else {
+
+            if (mFlingConfirmed) {
+                return true;
+            }
+            float dX = (Math.abs(ev.getX() - mTouchX));
+            float dY = (Math.abs(ev.getY() - mTouchY));
+            if ((dX > SWIPE_MIN_DISTANCE) || (dY > SWIPE_MIN_DISTANCE)) {
+                mFlingConfirmed = true;
+                return true;
+            }
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return gDetector.onTouchEvent(ev);
+    }
+
+    /**
+     * Set the board manager.
+     * @param boardManager
+     */
+    public void setBoardManager(BoardManagerST boardManager) {
+        mController.setBoardManager(boardManager);
     }
 
     /**
@@ -71,6 +149,9 @@ public class GestureDetectGridViewST extends GestureDetectGridView {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Integer value = dataSnapshot.child(currentUid).child("mmsliding").getValue(Integer.class);
+                            if (value == null){
+                                value = 0;
+                            }
                             if (value < score){
                                 mRef.child(currentUid).child("mmsliding").setValue(score);
                             }
@@ -79,7 +160,7 @@ public class GestureDetectGridViewST extends GestureDetectGridView {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
                     });
-                    ((GameActivity)parentActivity).makeToastText("You Win");
+                    ((GameActivity)parentActivity).makeToastText("You Win!");
                 }
                 return true;
             }

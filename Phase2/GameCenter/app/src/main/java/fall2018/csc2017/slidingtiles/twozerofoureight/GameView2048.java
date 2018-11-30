@@ -689,8 +689,6 @@ public class GameView2048 extends GridLayout{
      * the user restart the game.
      */
     private void gameOverListener(){
-        //File testFile = new File(getContext().getFilesDir(), GameActivity2048.SAVE_FILENAME);
-        //testFile.delete();
         new AlertDialog.Builder(getContext()).setTitle(("Sorry")).setMessage("Game Over").setPositiveButton("Restart", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface d, int i ){
@@ -705,8 +703,6 @@ public class GameView2048 extends GridLayout{
      * the user restart the game.
      */
     private void gameWonListener(){
-       // File testFile = new File(getContext().getFilesDir(), GameActivity2048.SAVE_FILENAME);
-        //testFile.delete();
         new AlertDialog.Builder(getContext()).setTitle(("Congratulations")).setMessage("You Won. Your Score is" + score).setPositiveButton("Restart", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface d, int i ){
@@ -760,7 +756,9 @@ public class GameView2048 extends GridLayout{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Integer value = dataSnapshot.child(currentUid).child("mm2048").getValue(Integer.class);
-
+                if (value == null){
+                    value = 0;
+                }
                 if (value < score){
                     mRef.child(currentUid).child("mm2048").setValue(score);
                 }

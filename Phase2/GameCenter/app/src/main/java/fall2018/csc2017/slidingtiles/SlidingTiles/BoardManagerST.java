@@ -8,14 +8,6 @@ import java.util.List;
 
 public class BoardManagerST implements Serializable {
 
-    /**
-     * Manage a board that has been pre-populated.
-     * @param board the board
-
-    BoardManagerST(BoardST board) {
-    super(board);
-    }
-     */
 
     /**
      * The board being managed.
@@ -96,29 +88,12 @@ public class BoardManagerST implements Serializable {
     }
 
     /**
-     * an boolean defines if the tap is valid.
-     * @param position
-     * @return
-
-    abstract boolean isValidTap(int position);
-     */
-
-    /**
-     * Process a touch at position in the board, swapping tiles as appropriate.
-     *
-     * @param position the position
-
-    abstract boolean touchMove(int position);
-
-     */
-
-    /**
      * Manage a new shuffled board.
      */
     BoardManagerST() {
 
-        List<Tile> tiles = new ArrayList<>();
-        int numTiles = Board.NUM_COLS * Board.NUM_ROWS;
+        List<TileST> tiles = new ArrayList<>();
+        int numTiles = BoardST.NUM_COLS * BoardST.NUM_ROWS;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
             // blank tile, file name is tile_25
             if (tileNum == numTiles - 1) {
@@ -129,7 +104,7 @@ public class BoardManagerST implements Serializable {
         }
         Collections.shuffle(tiles);
         this.board = new BoardST(tiles);
-        while (!isSolvable(tiles, Board.NUM_COLS)) {
+        while (!isSolvable(tiles, BoardST.NUM_COLS)) {
             Collections.shuffle(tiles);
         }
         this.board = new BoardST(tiles);
@@ -141,17 +116,17 @@ public class BoardManagerST implements Serializable {
      */
     BoardManagerST(int image_width, int image_height) {
 
-        List<Tile> tiles = new ArrayList<>();
-        int tile_width = image_width / Board.NUM_ROWS;
-        int tile_height = image_height / Board.NUM_COLS;
+        List<TileST> tiles = new ArrayList<>();
+        int tile_width = image_width / BoardST.NUM_ROWS;
+        int tile_height = image_height / BoardST.NUM_COLS;
 
-        for (int x = 0; x < Board.NUM_ROWS; x++) {
-            for (int y = 0; y < Board.NUM_COLS; y++) {
-                if (x == Board.NUM_ROWS - 1 && y == Board.NUM_COLS - 1) {
+        for (int x = 0; x < BoardST.NUM_ROWS; x++) {
+            for (int y = 0; y < BoardST.NUM_COLS; y++) {
+                if (x == BoardST.NUM_ROWS - 1 && y == BoardST.NUM_COLS - 1) {
                     // blank tile, file name is tile_25
                     tiles.add(new TileST());
                 } else {
-                    tiles.add(new TileST(y* Board.NUM_COLS + x + 1,
+                    tiles.add(new TileST(y* BoardST.NUM_COLS + x + 1,
                             x*tile_width, y*tile_height, tile_width, tile_height));
                 }
             }
@@ -170,7 +145,7 @@ public class BoardManagerST implements Serializable {
     boolean puzzleSolved() {
         boolean solved = true;
         int prev_tile = 0;
-        for (Tile tile : board) {
+        for (TileST tile : board) {
             solved = solved && (prev_tile < tile.getId());
             prev_tile = tile.getId();
         }
@@ -185,14 +160,14 @@ public class BoardManagerST implements Serializable {
      */
     boolean isValidTap(int position) {
 
-        int row = position / Board.NUM_COLS;
-        int col = position % Board.NUM_COLS;
+        int row = position / BoardST.NUM_COLS;
+        int col = position % BoardST.NUM_COLS;
         int blankId = board.numTiles();
         // Are any of the 4 the blank tile?
-        Tile above = row == 0 ? null : board.getTile(row - 1, col);
-        Tile below = row == Board.NUM_ROWS - 1 ? null : board.getTile(row + 1, col);
-        Tile left = col == 0 ? null : board.getTile(row, col - 1);
-        Tile right = col == Board.NUM_COLS - 1 ? null : board.getTile(row, col + 1);
+        TileST above = row == 0 ? null : board.getTile(row - 1, col);
+        TileST below = row == BoardST.NUM_ROWS - 1 ? null : board.getTile(row + 1, col);
+        TileST left = col == 0 ? null : board.getTile(row, col - 1);
+        TileST right = col == BoardST.NUM_COLS - 1 ? null : board.getTile(row, col + 1);
         return (below != null && below.getId() == blankId)
                 || (above != null && above.getId() == blankId)
                 || (left != null && left.getId() == blankId)
@@ -206,8 +181,8 @@ public class BoardManagerST implements Serializable {
      */
     boolean touchMove(int position) {
 
-        int row = position / Board.NUM_ROWS;
-        int col = position % Board.NUM_COLS;
+        int row = position / BoardST.NUM_ROWS;
+        int col = position % BoardST.NUM_COLS;
         List<Integer> coord = findBlankCoord();
         boolean isSuccessfulMove = false;
         BoardST stBoard = (BoardST)board;
@@ -230,7 +205,7 @@ public class BoardManagerST implements Serializable {
         int blankRow = 0, blankColumn = 0;
         for (int i = 0; i < getBoard().NUM_ROWS; i++) {
             for (int j = 0; j < getBoard().NUM_COLS; j++) {
-                Tile tile = board.getTile(i, j);
+                TileST tile = board.getTile(i, j);
                 if (tile.getId() == blankId) {
                     blankRow = i;
                     blankColumn = j;
@@ -255,10 +230,10 @@ public class BoardManagerST implements Serializable {
      * @param tiles the list of tiles
      * @return total number of inversions in a list of tiles for every single tile
      */
-    int checkTotalInversions(List<Tile> tiles) {
+    int checkTotalInversions(List<TileST> tiles) {
         int inversions = 0;
         for (int i = 0; i < tiles.size(); i++) {
-            List<Tile> sublist = tiles.subList(i, tiles.size());
+            List<TileST> sublist = tiles.subList(i, tiles.size());
             inversions += checkInversion(sublist); //
         }
         return inversions;
@@ -269,11 +244,11 @@ public class BoardManagerST implements Serializable {
      * @param tiles the list of tiles
      * @return number of inversions in a list of tiles for Tile at position 0
      */
-    int checkInversion(List<Tile> tiles) {
+    int checkInversion(List<TileST> tiles) {
         int counter = 0;
         if (tiles.size() != 0) {
             int number = tiles.get(0).getId();
-            for (Tile i : tiles) {
+            for (TileST i : tiles) {
                 if (number > i.getId()) {
                     counter++;
                 }
@@ -289,7 +264,7 @@ public class BoardManagerST implements Serializable {
      * @param gridWidth the width of the board
      * @return whether the board is solvable
      */
-    boolean isSolvable(List<Tile> tiles, int gridWidth) {
+    boolean isSolvable(List<TileST> tiles, int gridWidth) {
         //Check number of inversions and add up
         //( (grid width odd) && (#inversions even) )  ||  ( (grid width even) && ((blank on odd row from bottom) == (#inversions even)) )
 

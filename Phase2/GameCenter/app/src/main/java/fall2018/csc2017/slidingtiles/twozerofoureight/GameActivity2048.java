@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,9 +29,14 @@ import fall2018.csc2017.slidingtiles.R;
 public class GameActivity2048 extends AppCompatActivity {
 
     /**
+     * Current user's email
+     */
+    public static String emailFileName = "";
+
+    /**
      * Game Score
      */
-    public static final String CURRENT_SCORE = "save_score.ser";
+    public static String CURRENT_SCORE = "save_score.ser";
 
     /**
      * Game Score
@@ -39,7 +46,7 @@ public class GameActivity2048 extends AppCompatActivity {
     /**
      * The main save file.
      */
-    public static final String SAVE_FILENAME = "save_file_2048.ser";
+    public static String SAVE_FILENAME = "save_file_2048.ser";
 
     /**
      * A GameView2048 for the game view.
@@ -91,6 +98,14 @@ public class GameActivity2048 extends AppCompatActivity {
         return stack;
     }
 
+    /**
+     * Update the file names
+     */
+    public void updateFileNames(String name){
+        CURRENT_SCORE =  emailFileName + "_2048_SCORE.ser";
+        SAVE_FILENAME =  emailFileName + "_2048.ser";
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -98,12 +113,20 @@ public class GameActivity2048 extends AppCompatActivity {
         gameView2048 = findViewById(R.id.gameView2048);
         currentScore = (TextView) findViewById(R.id.score);
         currentScore.setTextSize(10);
+        final String currentEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        currentEmail.replace("@", "_");
+        currentEmail.replace(".", "_");
+        emailFileName = currentEmail;
+        updateFileNames(emailFileName);
         File testScore = new File(getApplicationContext().getFilesDir(), CURRENT_SCORE);
         if (testScore.exists()){
             loadScoreFromFile(CURRENT_SCORE);
-            currentScore.setText(String.valueOf(gameScore));
-            gameView2048.setScore(gameScore);
         }
+        else{
+            gameScore = 0;
+        }
+        currentScore.setText(String.valueOf(gameScore));
+        gameView2048.setScore(gameScore);
         addUndoButtonListener();
         addNewGameButtonListener();
         addScoreBoardButtonListener();
@@ -111,7 +134,6 @@ public class GameActivity2048 extends AppCompatActivity {
         File testFile = new File(getApplicationContext().getFilesDir(), SAVE_FILENAME);
         if(testFile.exists()) {
             gameView2048.loadFromFile(SAVE_FILENAME);
-            //clearStack();
             makeToastLoadedText();
         }
         handler.post(new Runnable(){
