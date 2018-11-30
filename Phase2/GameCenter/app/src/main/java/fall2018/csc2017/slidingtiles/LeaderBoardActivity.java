@@ -7,7 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +54,20 @@ public class LeaderBoardActivity extends AppCompatActivity {
     }
 
     /**
+     * get all the emails
+     * @param users
+     * @return ArrayList
+     */
+    public ArrayList getEmail(Map<String, Object> users) {
+        ArrayList<String> email_list = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
+            Map singleUser = (Map) entry.getValue();
+            email_list.add((String) singleUser.get("email"));
+        }
+        return email_list;
+    }
+
+    /**
      * Get the score of the user.
      * @param users
      * @return Arraylist.
@@ -70,10 +86,11 @@ public class LeaderBoardActivity extends AppCompatActivity {
      * @param list
      * @param list_name
      */
-    public void bubblesrt(ArrayList<Long> list, ArrayList<String> list_name)
+    public void bubblesrt(ArrayList<Long> list, ArrayList<String> list_name, ArrayList<String> email_name)
     {
         Long temp;
         String temp_name;
+        String temp_email_name;
         if (list.size()>1) // check if the number of orders is larger than 1
         {
             for (int x=0; x<list.size(); x++) // bubble sort outer loop
@@ -87,6 +104,9 @@ public class LeaderBoardActivity extends AppCompatActivity {
                         temp_name = list_name.get(i);
                         list_name.set(i,list_name.get(i+1) );
                         list_name.set(i+1, temp_name);
+                        temp_email_name = email_name.get(i);
+                        email_name.set(i,email_name.get(i+1) );
+                        email_name.set(i+1, temp_email_name);
                     }
                 }
             }
@@ -104,9 +124,23 @@ public class LeaderBoardActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 RecyclerView recycleView = findViewById(R.id.board_list);
                 List<score_board_item> mlist = new ArrayList<>();
+                int temp_int = 0;
+                String currentEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                @SuppressWarnings("unchecked")
                 ArrayList<String> name_list = getName((Map<String, Object>) dataSnapshot.getValue());
+                @SuppressWarnings("unchecked")
                 ArrayList<Long> score_list = getScore((Map<String, Object>) dataSnapshot.getValue());
-                bubblesrt(score_list, name_list);
+                @SuppressWarnings("unchecked")
+                ArrayList<String> email_list = getEmail((Map<String, Object>) dataSnapshot.getValue());
+                bubblesrt(score_list, name_list,email_list);
+                for (int i=0; i < email_list.size(); i++){
+                    if (currentEmail.equals(email_list.get(i))){
+                        temp_int = i;
+                    }
+                }
+                TextView ranking;
+                ranking = findViewById(R.id.myranking);
+                ranking.setText("Your ranking: " + String.valueOf(temp_int + 1) + " (Score: " + score_list.get(temp_int) + ")");
                 for (int i=0; i < score_list.size(); i++) {
                     mlist.add(new score_board_item(name_list.get(i), score_list.get(i).toString()));
                 }
