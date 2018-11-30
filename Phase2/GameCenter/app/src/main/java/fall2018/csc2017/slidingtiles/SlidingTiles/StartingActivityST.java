@@ -105,7 +105,6 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
                         makeToastText("Save file has default background, please check use default background in settings.");
                     }
                     else {
-                        makeToastText("1");
                         boardManager.clearStack();
                         GameActivity.clearTimeScore();
                         GameActivity.clearNumMoves();
@@ -294,13 +293,18 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadable = true;
-                updateGameSettings();
-                boardManager.clearStack();
-                boardManager.initial_1 = boardManager.getBoard();
-                GameActivity.clearTimeScore();
-                GameActivity.clearNumMoves();
-                switchToGame();
+                if (isDefaultImage() && !GameActivity.hasBackground()){
+                    makeToastText("Image is not loaded");
+                }
+                else {
+                    loadable = true;
+                    updateGameSettings();
+                    boardManager.clearStack();
+                    boardManager.initial_1 = boardManager.getBoard();
+                    GameActivity.clearTimeScore();
+                    GameActivity.clearNumMoves();
+                    switchToGame();
+                }
             }
         });
     }
@@ -371,7 +375,6 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
                 if (boardManager.managerStack.peek().getIsImage()){
                     boardManager.setIsImage(true);
                 }
-                boardManager.initial_1 = boardManager.getBoard();
             }
             else {
                 if (boardManager.managerStack.thelast != null) {
@@ -379,14 +382,12 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
                     if (boardManager.managerStack.thelast.getIsImage()){
                         boardManager.setIsImage(true);
                     }
-                    boardManager.initial_1 = boardManager.getBoard();
                 }
                 else {
                     boardManager = new BoardManagerST(boardManager.initial_1);
                     if (boardManager.initial_1.getIsImage()){
                         boardManager.setIsImage(true);
                     }
-                    boardManager.initial_1 = boardManager.getBoard();
                 }
             }
         }

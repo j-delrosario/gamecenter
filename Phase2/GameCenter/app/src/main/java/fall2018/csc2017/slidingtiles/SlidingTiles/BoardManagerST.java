@@ -155,7 +155,6 @@ public class BoardManagerST implements Serializable {
         }
         Collections.shuffle(tiles);
         this.board = new BoardST(tiles);
-        initial_1 = board;
         intRow = getRow();
         setIsImage(true);
     }
