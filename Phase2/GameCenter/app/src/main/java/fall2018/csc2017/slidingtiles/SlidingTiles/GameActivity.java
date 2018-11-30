@@ -159,6 +159,9 @@ public class GameActivity extends AppCompatActivity implements Observer{
      */
     public void updateBoard() {
         BoardST b = new BoardST(boardManager.getBoard().getTiles());
+        if (boardManager.getIsImage()){
+            b.setIsImage(true);
+        }
         BoardManagerST.managerStack.push(b);
     }
 
@@ -171,7 +174,6 @@ public class GameActivity extends AppCompatActivity implements Observer{
         // Add View to activity
         setContentView(R.layout.activity_main_st);
         gridView = findViewById(R.id.grid);
-
         gridView.setNumColumns(BoardST.NUM_COLS);
         gridView.setBoardManager(boardManager);
         boardManager.getBoard().addObserver(this);

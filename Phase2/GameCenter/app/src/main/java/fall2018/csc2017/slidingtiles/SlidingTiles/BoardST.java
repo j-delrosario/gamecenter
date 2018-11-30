@@ -30,6 +30,26 @@ public class BoardST extends Observable implements Serializable, Iterable<TileST
     protected TileST[][] tiles = new TileST[NUM_ROWS][NUM_COLS];
 
     /**
+     * A boolean shows if the board is image.
+     */
+    private boolean isImage = false;
+
+    /**
+     *  set isImage boolean.
+     * @param b
+     */
+    public void setIsImage(boolean b){
+        isImage = b;
+    }
+
+    /**
+     *  get isImage boolean.
+     */
+    public boolean getIsImage(){
+        return isImage;
+    }
+
+    /**
      * A new board of tiles in row-major order.
      * Precondition: len(tiles) == NUM_ROWS * NUM_COLS
      *

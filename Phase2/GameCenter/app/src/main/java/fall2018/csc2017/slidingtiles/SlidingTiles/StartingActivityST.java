@@ -90,14 +90,25 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
                 if(testFile.exists()) {
                     updateGameSettings();
                     loadFromFile(SAVE_FILENAME);
+                    boardManager.initial_1 = boardManager.getBoard();
+                    saveToFile(TEMP_SAVE_FILENAME);
                     if (boardManager.getNumRow() != SizeRow ){
                         makeToastText("Save file has board size of " + String.valueOf(boardManager.getNumRow()) + ", does not match the current size " + String.valueOf(SizeRow));
                     }
+                    else if (isDefaultImage() && boardManager.getIsImage() && !GameActivity.hasBackground()) {
+                        makeToastText("Image is not loaded");
+                    }
+                    else if (!isDefaultImage() && boardManager.getIsImage()){
+                        makeToastText("Save file has image background, please uncheck use default background in settings.");
+                    }
+                    else if (isDefaultImage() && ! boardManager.getIsImage()){
+                        makeToastText("Save file has default background, please check use default background in settings.");
+                    }
                     else {
+                        makeToastText("1");
                         boardManager.clearStack();
                         GameActivity.clearTimeScore();
                         GameActivity.clearNumMoves();
-                        boardManager.initial_1 = boardManager.getBoard();
                         makeToastText("Loaded Game");
                         switchToGame();
                     }
@@ -226,7 +237,6 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
         addSettingsButtonListener();
         addUndoButtonListener();
         addScoreBoardButtonListener();
-
     }
 
     @Override
@@ -234,6 +244,20 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         // load and parse the .xml file associated with SharedPreferences (as soon as possible)
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("size_list", "");
+    }
+
+    /**
+     * get if the use default image is selected
+     */
+    public boolean isDefaultImage(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean use_default_image = prefs.getBoolean("use_default_image", true);
+        if (!use_default_image){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     /**
@@ -325,6 +349,8 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
                 }
                 if (!boardManager.managerStack.isEmpty()) {
                     undo();
+                    saveToFile(SAVE_FILENAME);
+                    saveToFile(TEMP_SAVE_FILENAME);
                     switchToGame();
                 }
                 else {
@@ -342,13 +368,25 @@ public class StartingActivityST extends AppCompatActivity implements Runnable{
             boardManager.managerStack.pop();
             if (!boardManager.managerStack.isEmpty()) {
                 boardManager = new BoardManagerST(boardManager.managerStack.peek());
+                if (boardManager.managerStack.peek().getIsImage()){
+                    boardManager.setIsImage(true);
+                }
+                boardManager.initial_1 = boardManager.getBoard();
             }
             else {
                 if (boardManager.managerStack.thelast != null) {
                     boardManager = new BoardManagerST(boardManager.managerStack.thelast);
+                    if (boardManager.managerStack.thelast.getIsImage()){
+                        boardManager.setIsImage(true);
+                    }
+                    boardManager.initial_1 = boardManager.getBoard();
                 }
                 else {
                     boardManager = new BoardManagerST(boardManager.initial_1);
+                    if (boardManager.initial_1.getIsImage()){
+                        boardManager.setIsImage(true);
+                    }
+                    boardManager.initial_1 = boardManager.getBoard();
                 }
             }
         }

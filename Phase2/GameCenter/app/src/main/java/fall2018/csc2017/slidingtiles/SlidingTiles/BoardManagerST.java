@@ -112,6 +112,28 @@ public class BoardManagerST implements Serializable {
     }
 
     /**
+     * a BOOLEAN represents if the board is image.
+     */
+    private boolean isImage = false;
+
+    /**
+     * Set if thie Board is an Image.
+     * @return
+     */
+    public void setIsImage(boolean b){
+        isImage = b;
+        getBoard().setIsImage(b);
+    }
+
+    /**
+     * get if thie Board is an Image.
+     * @return
+     */
+    public boolean getIsImage(){
+        return isImage;
+    }
+
+    /**
      * Manage a new shuffled board with user chosen image.
      */
     BoardManagerST(int image_width, int image_height) {
@@ -135,6 +157,7 @@ public class BoardManagerST implements Serializable {
         this.board = new BoardST(tiles);
         initial_1 = board;
         intRow = getRow();
+        setIsImage(true);
     }
 
     /**
