@@ -106,6 +106,12 @@ public class BoardStackTest {
         assertTrue(boardStack.isEmpty());
     }
 
+    @Test(expected = Exception.class)
+    public void testPopException() {
+        setUpCorrect();
+        boardStack.pop();
+    }
+
 
     /**
      * Test whether stack is empty
@@ -116,7 +122,7 @@ public class BoardStackTest {
         assertTrue(boardStack.isEmpty());
         boardStack.push(bottomBoard);
         boardStack.pop();
-        assertTrue(boardStack.isEmpty());
+        assertTrue(boardStack.isEmpty());g
     }
 
 
@@ -142,6 +148,12 @@ public class BoardStackTest {
         boardStack.push(middleBoard);
         boardStack.push(topBoard);
         assertTrue(boardStack.isFull());
+    }
+
+    @Test
+    public void testGetNumRowInStack() {
+        setUpCorrect();
+        assertEquals(4, boardStack.getNumRowInStack());
     }
 
 

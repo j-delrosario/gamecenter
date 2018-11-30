@@ -76,7 +76,7 @@ public class TileNumStack {
     }
 
     /**
-     * Returns true if the stack if empty, false if not.
+     * Returns true if the stack tif empty, false if not.
      * @return bool
      */
     public boolean isEmpty() {

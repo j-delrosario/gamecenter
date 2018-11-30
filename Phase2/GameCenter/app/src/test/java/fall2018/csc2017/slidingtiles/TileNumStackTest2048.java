@@ -2,14 +2,10 @@ package fall2018.csc2017.slidingtiles;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Array;
 
-import fall2018.csc2017.slidingtiles.SlidingTiles.BoardST;
-import fall2018.csc2017.slidingtiles.SlidingTiles.BoardStack;
-import fall2018.csc2017.slidingtiles.SlidingTiles.TileST;
 import fall2018.csc2017.slidingtiles.twozerofoureight.ScoreStack;
+import fall2018.csc2017.slidingtiles.twozerofoureight.TileNumStack;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,28 +16,28 @@ public class TileNumStackTest2048 {
     /**
      * The board stack for testing.
      */
-    ScoreStack scoreStack;
+    TileNumStack tileNumStackTest2048;
 
     /**
      * The first board pushed in
      */
-    int bottomBoard = 3;
+    int[] bottomBoard = new int[]{3};
 
     /**
      * The second board pushed in
      */
-    int middleBoard = 2;
+    int[] middleBoard = new int[]{2};
 
     /**
      * The last and most recent board pushed in
      */
-    int topBoard = 1;
+    int[] topBoard = new int[]{1};
 
     /**
      * Create a new board stack
      */
     private void setUpCorrect() {
-        scoreStack = new ScoreStack(3);
+        tileNumStackTest2048 = new TileNumStack(3);
     }
 
 
@@ -51,13 +47,13 @@ public class TileNumStackTest2048 {
     @Test
     public void testPush() {
         setUpCorrect();
-        scoreStack.push(bottomBoard);
-        scoreStack.push(middleBoard);
-        assertFalse(scoreStack.isFull());
-        scoreStack.push(topBoard);
-        assertTrue(scoreStack.isFull());
-        scoreStack.push(middleBoard);
-        assertNotEquals(topBoard, scoreStack.peek());
+        tileNumStackTest2048.push(bottomBoard);
+        tileNumStackTest2048.push(middleBoard);
+        assertFalse(tileNumStackTest2048.isFull());
+        tileNumStackTest2048.push(topBoard);
+        assertTrue(tileNumStackTest2048.isFull());
+        tileNumStackTest2048.push(middleBoard);
+        assertNotEquals(topBoard, tileNumStackTest2048.peek());
 
     }
 
@@ -68,9 +64,9 @@ public class TileNumStackTest2048 {
     @Test
     public void testPop() {
         setUpCorrect();
-        scoreStack.push(bottomBoard);
-        assertEquals(bottomBoard, scoreStack.pop());
-        assertTrue(scoreStack.isEmpty());
+        tileNumStackTest2048.push(bottomBoard);
+        assertEquals(bottomBoard, tileNumStackTest2048.pop());
+        assertTrue(tileNumStackTest2048.isEmpty());
     }
 
 
@@ -80,10 +76,10 @@ public class TileNumStackTest2048 {
     @Test
     public void testIsEmpty() {
         setUpCorrect();
-        assertTrue(scoreStack.isEmpty());
-        scoreStack.push(bottomBoard);
-        scoreStack.pop();
-        assertTrue(scoreStack.isEmpty());
+        assertTrue(tileNumStackTest2048.isEmpty());
+        tileNumStackTest2048.push(bottomBoard);
+        tileNumStackTest2048.pop();
+        assertTrue(tileNumStackTest2048.isEmpty());
     }
 
 
@@ -93,9 +89,9 @@ public class TileNumStackTest2048 {
     @Test
     public void testPeek() {
         setUpCorrect();
-        scoreStack.push(bottomBoard);
-        assertEquals(bottomBoard, scoreStack.peek());
-        assertTrue(!scoreStack.isEmpty());
+        tileNumStackTest2048.push(bottomBoard);
+        assertEquals(bottomBoard, tileNumStackTest2048.peek());
+        assertTrue(!tileNumStackTest2048.isEmpty());
     }
 
 
@@ -105,10 +101,10 @@ public class TileNumStackTest2048 {
     @Test
     public void testIsFull() {
         setUpCorrect();
-        scoreStack.push(bottomBoard);
-        scoreStack.push(middleBoard);
-        scoreStack.push(topBoard);
-        assertTrue(scoreStack.isFull());
+        tileNumStackTest2048.push(bottomBoard);
+        tileNumStackTest2048.push(middleBoard);
+        tileNumStackTest2048.push(topBoard);
+        assertTrue(tileNumStackTest2048.isFull());
     }
 
 }
