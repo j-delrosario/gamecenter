@@ -17,60 +17,6 @@ public class TileMatchTest {
      */
     TileMatch tile1 = new TileMatch(androidx.test.core.app.ApplicationProvider.getApplicationContext());
 
-
-    /**
-     * Test getting the background of a Tile
-     */
-    @Test
-    public void testGetbackground() {
-        assertTrue(tile1.getbackground() == 0);
-    }
-
-    /**
-     * Test setting the background of a Tile
-     */
-    @Test
-    public void testSetbackground() {
-        tile1.setbackground(7);
-        assertTrue(tile1.getbackground() == 7);
-
-    }
-
-    /**
-     * Test getting the currently visible background of a Tile
-     */
-    @Test
-    public void testGetBackground() {
-        assertTrue(tile1.getVisibleBackground() == 0);
-    }
-
-    /**
-     * Test setting the currently visible background of a Tile
-     */
-    @Test
-    public void testSetVisibleBackground() {
-        tile1.setBackground(12);
-        assertTrue(tile1.getVisibleBackground() == 12);
-
-    }
-
-    /**
-     * Test getting whether the Tile has already been matched
-     */
-    @Test
-    public void testGetIsMatched() {
-        assertFalse(tile1.getIsMatched());
-    }
-
-    /**
-     * Test setting whether the Tile has already been matched
-     */
-    @Test
-    public void testSetIsMatched() {
-        tile1.setIsMatched(true);
-        assertTrue(tile1.getIsMatched());
-    }
-
     /**
      * Test the String representation of a tile
      */

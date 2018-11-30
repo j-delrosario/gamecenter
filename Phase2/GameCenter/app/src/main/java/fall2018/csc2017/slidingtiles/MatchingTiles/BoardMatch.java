@@ -80,7 +80,7 @@ public class BoardMatch extends Observable implements Serializable {
      * Return the number of moves.
      * @return int
      */
-    private int moveCount() { return moves; }
+    public int moveCount() { return moves; }
 
     /**
      * Returns true if the game is completed.
@@ -258,7 +258,7 @@ public class BoardMatch extends Observable implements Serializable {
             for (int j = 0; j < NUM_COL; j++){
                 saveValue[i][j][0] = tiles[i][j].getbackground();
                 saveValue[i][j][1] = tiles[i][j].getVisibleBackground();
-                saveValue[i][j][2] = (tiles[i][j].getIsMatched() == true) ? 1 : 0;
+                saveValue[i][j][2] = tiles[i][j].getIsMatched() ? 1 : 0;
             }
         }
         return saveValue;
