@@ -1,9 +1,9 @@
 STEPS TO SETUP YOUR LOCAL REPO
 
     From the terminal:
-        -   git clone https://github.com/j-delrosario/gamecenter.git PROJECT
+            git clone https://github.com/j-delrosario/gamecenter.git
         -   Open Android Studio
-        -   File -> Open -> Navigate to GameCenter as the folder to open
+        -   File -> Open -> Navigate to gamecenter/GameCenter as the folder to open
 
 Features:
     Game launch centre:
